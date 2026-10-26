@@ -53,13 +53,16 @@ class NvidiaInferenceEngine:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        model: str = DEFAULT_MODEL,
+        model: Optional[str] = None,
         endpoint: str = DEFAULT_ENDPOINT,
     ):
         self._explicit_key = api_key
         self.endpoint = endpoint or DEFAULT_ENDPOINT
-        # Read saved model if available
-        self.model = self._load_saved_model(model or DEFAULT_MODEL)
+        if model is not None:
+            clean = model.strip().lower()
+            self.model = MODEL_ALIASES.get(clean) or MODEL_ALIASES.get(clean.split("/")[-1]) or model.strip()
+        else:
+            self.model = self._load_saved_model(DEFAULT_MODEL)
 
     def _load_saved_model(self, fallback: str) -> str:
         if os.path.exists(SETTINGS_FILE):
