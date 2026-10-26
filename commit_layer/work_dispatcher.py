@@ -35,6 +35,7 @@ from commit_layer.personal_agent_dashboard import (
 from commit_layer.autonomous_workforce import autonomous_workforce
 from commit_layer.tools.morning_briefing_agent import morning_briefing_agent
 from commit_layer.memory_hive import memory_hive
+from commit_layer.nvidia_engine import nvidia_engine
 
 logger = logging.getLogger(__name__)
 
@@ -150,6 +151,28 @@ class WorkDispatcher:
 
     def _generate_response(self, task: str, assigned: str) -> str:
         """Domain-specialized synthesis for the designated worker or squad."""
+        # ── Fast path: NVIDIA Nemotron 3.5 Bolt (Free API + CoT Thinking) ─────
+        if nvidia_engine.is_available():
+            try:
+                res = nvidia_engine.generate_agent_reasoning(agent_role=assigned, task=task)
+                if res.get("status") == "success" and res.get("content"):
+                    text_content = res["content"].strip()
+                    thinking = res.get("thinking", "").strip()
+                    if thinking:
+                        sec = res.get("elapsed_sec", 0)
+                        formatted_cot = "\n> ".join(thinking.splitlines())
+                        return (
+                            f"> [!NOTE]\n"
+                            f"> **💭 Nemotron 3.5 Bolt Chain-of-Thought ({sec}s)**\n"
+                            f">\n"
+                            f"> {formatted_cot}\n\n"
+                            f"{text_content}"
+                        )
+                    return text_content
+            except Exception as e:
+                logger.warning(f"Nemotron inference failed, falling back to local CPU: {e}")
+
+        # ── Local deterministic / sovereign fallback ─────────────────────────
         lower = task.lower()
 
         # Persona: Researcher / Research Squad
@@ -266,7 +289,7 @@ class WorkDispatcher:
 {c_purple}╠════════════════════════════════════════════════════════════════════════════════════════════╣{rst}
   {c_white}Task Directive   :{rst} {c_white}"{task}"{rst}
   {c_white}Assigned Squad   :{rst} {c_cyan}{agent_name}{rst}
-  {c_white}Execution Core   :{rst} 100% Local CPU • In-Process Sovereign Runtime (0% Cloud APIs)
+  {c_white}Execution Core   :{rst} {"NVIDIA Nemotron 3.5 Bolt (CoT Thinking)" if nvidia_engine.is_available() else "100% Local CPU • In-Process Sovereign Runtime"}
   {c_white}Ed25519 Receipt  :{rst} {c_amber}{receipt_id}{rst}
   {c_white}Local Dashboard  :{rst} {c_emerald}{dashboard_url}{rst}
 {c_purple}╟────────────────────────────────────────────────────────────────────────────────────────────╢{rst}

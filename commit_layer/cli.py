@@ -257,6 +257,11 @@ def main():
     p_pa = subparsers.add_parser("personal-agent", help="Personal agent workspace and dashboard commands")
     p_pa.add_argument("subaction", choices=["setup", "dashboard", "status"], help="Action to execute")
 
+    # nvidia command
+    p_nvidia = subparsers.add_parser("nvidia", help="NVIDIA Nemotron 3.5 Bolt configuration and testing")
+    p_nvidia.add_argument("action", choices=["key", "status", "test"], help="Action: key <your_key>, status, or test")
+    p_nvidia.add_argument("val", nargs="?", default="", help="API key string (for 'key' action)")
+
     args = parser.parse_args()
 
     if args.command == "morning":
@@ -316,13 +321,42 @@ def main():
             print(f"\n[CIEAV PERSONAL AGENT] {res['message']}\n")
         elif args.subaction == "status":
             st = dashboard_server.get_status()
+            from commit_layer.nvidia_engine import nvidia_engine
+            nv_st = nvidia_engine.get_status()
             alive_col = "\033[1;32mONLINE\033[0m" if st["is_running"] else "\033[1;33mSTANDBY (Run 'cieav personal-agent dashboard')\033[0m"
             print(f"\n[CIEAV PERSONAL AGENT STATUS]")
             print(f"  • Dashboard Service : {alive_col}")
             print(f"  • URL               : {st['url']}")
-            print(f"  • Model Provider    : {st['model_provider']} ({st['model_name']})")
+            print(f"  • Model Provider    : {'NVIDIA Nemotron 3.5 Bolt (CoT Thinking)' if nv_st['available'] else f'{st["model_provider"]} ({st["model_name"]})'}")
+            print(f"  • NVIDIA API Status : {'ACTIVE' if nv_st['available'] else 'NO KEY (Run cieav nvidia key <key>)'}")
             print(f"  • Active Threads    : {st['active_threads_count']}")
             print(f"  • Spend Cap         : ${st['spend_cap_usd']:.2f} USD\n")
+    elif args.command == "nvidia":
+        from commit_layer.nvidia_engine import nvidia_engine
+        if args.action == "key":
+            if not args.val:
+                print("\nUsage: cieav nvidia key nvapi-...\n")
+            else:
+                nvidia_engine.set_api_key(args.val)
+                print(f"\n[NVIDIA NEMOTRON] API Key successfully configured and saved! Model: {nvidia_engine.model}\n")
+        elif args.action == "status":
+            st = nvidia_engine.get_status()
+            print("\n[NVIDIA NEMOTRON ENGINE STATUS]")
+            print(f"  • Endpoint        : {st['endpoint']}")
+            print(f"  • Model           : {st['model']}")
+            print(f"  • Available       : {'ACTIVE (Ready for tasks)' if st['available'] else 'NOT CONFIGURED (Run cieav nvidia key <key>)'}")
+            print(f"  • API Key         : {st['api_key_masked']}")
+            print(f"  • CoT Thinking    : Enabled (chat_template_kwargs: {{'enable_thinking': True}})\n")
+        elif args.action == "test":
+            print("\n[NVIDIA NEMOTRON] Testing connection with prompt: 'Which number is larger, 9.11 or 9.8?'...")
+            res = nvidia_engine.test_connection()
+            if res.get("status") == "success":
+                print(f"  • Status          : SUCCESS ({res.get('elapsed_sec')}s)")
+                if res.get("thinking"):
+                    print(f"  • Thinking (CoT)  :\n{res.get('thinking')}\n")
+                print(f"  • Response        :\n{res.get('content')}\n")
+            else:
+                print(f"  • Status          : FAILED - {res.get('error')}\n")
     else:
         repl()
 

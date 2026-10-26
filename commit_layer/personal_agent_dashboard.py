@@ -50,15 +50,18 @@ DEFAULT_PORT = 6796
 
 
 def get_default_settings() -> Dict[str, Any]:
+    from commit_layer.nvidia_engine import nvidia_engine
+    has_nv = nvidia_engine.is_available()
     return {
-        "model_provider": "local_cpu_qwen",
-        "model_name": "Qwen-3.5-9B-GGUF",
-        "endpoint": "http://127.0.0.1:11434/v1",
-        "temperature": 0.7,
+        "model_provider": "nvidia_nemotron" if has_nv else "local_cpu_qwen",
+        "model_name": "nvidia/nemotron-3.5-bolt-e4b" if has_nv else "Qwen-3.5-9B-GGUF",
+        "endpoint": "https://integrate.api.nvidia.com/v1/chat/completions" if has_nv else "http://127.0.0.1:11434/v1",
+        "temperature": 1.0 if has_nv else 0.7,
         "spend_limit_usd": 100.0,
         "daily_briefing_time": "08:00",
         "auto_undo_sla": True,
-        "port": DEFAULT_PORT
+        "port": DEFAULT_PORT,
+        "nvidia_api_key": nvidia_engine.get_api_key() or ""
     }
 
 
@@ -476,6 +479,58 @@ DASHBOARD_HTML = """<!DOCTYPE html>
       border-left: 3px solid var(--cyan);
       margin-bottom: 0.4rem;
     }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-box {
+      background: #111827;
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 540px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(168,85,247,0.15);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    .btn-close:hover { color: #fff; }
+    .thinking-box {
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+      margin: 0.5rem 0;
+      font-size: 0.78rem;
+      color: #c084fc;
+    }
+    .thinking-box summary {
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+    }
+
   </style>
 </head>
 <body>
@@ -487,6 +542,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     <div class="status-pills">
       <div class="pill pill-green">● 2PC SAFETY ACTIVE</div>
       <div class="pill pill-purple">PORT 6796</div>
+      <div class="pill pill-amber" id="nvidia-pill" onclick="openNvidiaModal()" style="cursor:pointer;" title="Click to configure NVIDIA Nemotron 3.5 Bolt (Free API)">⚡ NVIDIA NEMOTRON</div>
       <div class="pill pill-cyan" id="model-pill">LOCAL QWEN-3.5-9B</div>
     </div>
   </header>
@@ -601,8 +657,155 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     </aside>
   </div>
 
+  <!-- NVIDIA Nemotron Settings & Test Modal -->
+  <div id="nvidia-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span style="font-size:1.3rem;">⚡</span>
+          <div>
+            <h2 style="font-size:1.05rem; font-weight:700; color:#fff;">NVIDIA Nemotron 3.5 Bolt</h2>
+            <p style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">Free Cloud Endpoint • CoT Thinking Enabled</p>
+          </div>
+        </div>
+        <button onclick="closeNvidiaModal()" class="btn-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <label style="font-size:0.78rem; font-weight:600; color:#cbd5e1; display:block; margin-bottom:0.35rem;">NVIDIA API Key</label>
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+          <input type="password" id="nv-key-input" placeholder="nvapi-..." style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:0.6rem 0.8rem; color:#fff; font-size:0.85rem;" />
+          <button onclick="toggleKeyVisibility()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:0 0.75rem; color:#cbd5e1; cursor:pointer;" id="toggle-key-btn">Show</button>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.75rem; font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">
+          <div><strong>Model:</strong> <code>nvidia/nemotron-3.5-bolt-e4b</code></div>
+          <div><strong>Endpoint:</strong> <code>https://integrate.api.nvidia.com/v1/chat/completions</code></div>
+          <div><strong>Features:</strong> Chain-of-Thought (enable_thinking=True), Tool Calling, Streaming</div>
+          <div style="margin-top:0.4rem; color:var(--emerald);"><strong>Cost:</strong> Free Tier API provided by NVIDIA NGC</div>
+        </div>
+
+        <div id="nv-test-area" style="display:none; margin-bottom:1rem;">
+          <div style="font-size:0.75rem; font-weight:600; color:#cbd5e1; margin-bottom:0.35rem;">Live Test ("9.11 vs 9.8"):</div>
+          <div id="nv-test-thinking" style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.25); border-radius:6px; padding:0.5rem; font-size:0.72rem; color:#c084fc; max-height:100px; overflow-y:auto; margin-bottom:0.5rem; white-space:pre-wrap;"></div>
+          <div id="nv-test-output" style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:0.5rem; font-size:0.75rem; color:#f8fafc; max-height:90px; overflow-y:auto; white-space:pre-wrap;"></div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center;">
+        <button onclick="testNvidiaConnection()" id="btn-test-nv" style="background:rgba(6,182,212,0.15); border:1px solid var(--cyan); color:var(--cyan); border-radius:8px; padding:0.5rem 1rem; font-size:0.8rem; font-weight:600; cursor:pointer;">🧪 Run Test ("9.11 vs 9.8")</button>
+        <div style="display:flex; gap:0.5rem;">
+          <button onclick="closeNvidiaModal()" style="background:transparent; border:1px solid rgba(255,255,255,0.15); color:#94a3b8; border-radius:8px; padding:0.5rem 1rem; font-size:0.8rem; cursor:pointer;">Cancel</button>
+          <button onclick="saveNvidiaKey()" id="btn-save-nv" style="background:linear-gradient(135deg, var(--purple), #7c3aed); border:none; color:#fff; border-radius:8px; padding:0.5rem 1.25rem; font-size:0.8rem; font-weight:600; cursor:pointer;">Save Key</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     let currentSquad = "Personal Agent";
+
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/status");
+        const st = await res.json();
+        const modelPill = document.getElementById("model-pill");
+        const nvPill = document.getElementById("nvidia-pill");
+        if (st.nvidia && st.nvidia.available) {
+          nvPill.className = "pill pill-green";
+          nvPill.innerHTML = "⚡ NEMOTRON 3.5 (CoT ACTIVE)";
+          modelPill.textContent = "NVIDIA NEMOTRON 3.5";
+        } else {
+          nvPill.className = "pill pill-amber";
+          nvPill.innerHTML = "⚡ NVIDIA: NO KEY";
+          modelPill.textContent = "LOCAL QWEN-3.5-9B";
+        }
+      } catch (e) {
+        console.error("Status check failed", e);
+      }
+    }
+
+    function openNvidiaModal() {
+      document.getElementById("nvidia-modal").style.display = "flex";
+      fetch("/api/nvidia/status").then(r => r.json()).then(st => {
+        if (st.api_key_masked && !st.api_key_masked.startsWith("Not")) {
+          document.getElementById("nv-key-input").placeholder = st.api_key_masked;
+        }
+      }).catch(e => {});
+    }
+
+    function closeNvidiaModal() {
+      document.getElementById("nvidia-modal").style.display = "none";
+    }
+
+    function toggleKeyVisibility() {
+      const input = document.getElementById("nv-key-input");
+      const btn = document.getElementById("toggle-key-btn");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "Hide";
+      } else {
+        input.type = "password";
+        btn.textContent = "Show";
+      }
+    }
+
+    async function saveNvidiaKey() {
+      const key = document.getElementById("nv-key-input").value.trim();
+      if (!key) {
+        alert("Please enter a valid NVIDIA API Key (nvapi-...)");
+        return;
+      }
+      const saveBtn = document.getElementById("btn-save-nv");
+      saveBtn.textContent = "Saving...";
+      saveBtn.disabled = true;
+      try {
+        const res = await fetch("/api/nvidia/key", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ api_key: key })
+        });
+        const out = await res.json();
+        alert("NVIDIA API Key saved successfully! Model: nvidia/nemotron-3.5-bolt-e4b");
+        closeNvidiaModal();
+        checkStatus();
+      } catch (e) {
+        alert("Failed to save key: " + e.message);
+      } finally {
+        saveBtn.textContent = "Save Key";
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function testNvidiaConnection() {
+      const testArea = document.getElementById("nv-test-area");
+      const testThinking = document.getElementById("nv-test-thinking");
+      const testOutput = document.getElementById("nv-test-output");
+      const testBtn = document.getElementById("btn-test-nv");
+
+      testArea.style.display = "block";
+      testThinking.textContent = "💭 Nemotron 3.5 Bolt is reasoning about 'Which number is larger, 9.11 or 9.8?'...";
+      testOutput.textContent = "Awaiting model response...";
+      testBtn.disabled = true;
+      testBtn.textContent = "Testing...";
+
+      try {
+        const res = await fetch("/api/nvidia/test", { method: "POST" });
+        const out = await res.json();
+        if (out.status === "success") {
+          testThinking.textContent = "💭 Thinking Chain (" + out.elapsed_sec + "s):\n" + (out.thinking || "Direct reasoning qualified.");
+          testOutput.textContent = "Output: " + out.content;
+        } else {
+          testThinking.textContent = "⚠️ Error: " + (out.error || "Connection failed");
+          testOutput.textContent = "Please verify your NVIDIA API Key.";
+        }
+      } catch (e) {
+        testThinking.textContent = "⚠️ Request error: " + e.message;
+        testOutput.textContent = "";
+      } finally {
+        testBtn.disabled = false;
+        testBtn.textContent = "🧪 Run Test ('9.11 vs 9.8')";
+      }
+    }
+
     let currentThreadId = null;
 
     async function loadWorkspace() {
@@ -809,15 +1012,24 @@ class PersonalAgentHandler(BaseHTTPRequestHandler):
 
         if path == "/api/status":
             settings = load_settings()
+            from commit_layer.nvidia_engine import nvidia_engine
+            nv_status = nvidia_engine.get_status()
+            provider = "nvidia_nemotron" if nv_status["available"] else settings.get("model_provider", "local_cpu_qwen")
+            model_name = "nvidia/nemotron-3.5-bolt-e4b" if nv_status["available"] else settings.get("model_name", "Qwen-3.5-9B-GGUF")
             return self._send_json(200, {
                 "status": "online",
                 "version": "1.0.0-dots",
                 "port": settings.get("port", DEFAULT_PORT),
-                "model_provider": settings.get("model_provider"),
-                "model_name": settings.get("model_name"),
+                "model_provider": provider,
+                "model_name": model_name,
                 "spend_limit_usd": settings.get("spend_limit_usd"),
-                "active_threads": len(list_threads())
+                "active_threads": len(list_threads()),
+                "nvidia": nv_status
             })
+
+        if path == "/api/nvidia/status":
+            from commit_layer.nvidia_engine import nvidia_engine
+            return self._send_json(200, nvidia_engine.get_status())
 
         if path == "/api/threads":
             return self._send_json(200, list_threads())
@@ -875,6 +1087,17 @@ class PersonalAgentHandler(BaseHTTPRequestHandler):
                 return self._send_json(200, {"status": "success", "message": f"Receipt {rcpt_id} successfully compensated via 2PC.", "result": undo_res})
             except Exception as e:
                 return self._send_json(500, {"error": str(e)})
+
+        if path == "/api/nvidia/key":
+            from commit_layer.nvidia_engine import nvidia_engine
+            key = req_data.get("api_key", "").strip()
+            nvidia_engine.set_api_key(key)
+            return self._send_json(200, {"status": "success", "message": "NVIDIA API key updated", "nvidia": nvidia_engine.get_status()})
+
+        if path == "/api/nvidia/test":
+            from commit_layer.nvidia_engine import nvidia_engine
+            res = nvidia_engine.test_connection()
+            return self._send_json(200, res)
 
         if path == "/api/settings":
             current = load_settings()

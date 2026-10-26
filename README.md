@@ -482,6 +482,11 @@ cieav personal-agent setup          # Initialize local workspace & local model c
 cieav personal-agent dashboard      # Launch persistent web workspace on http://127.0.0.1:6796
 cieav personal-agent status         # Check background server, threads, and spend cap
 
+# NVIDIA Nemotron 3.5 Bolt Inference Engine (Free API + CoT Thinking)
+cieav nvidia key <nvapi-...>        # Configure & save NVIDIA API key
+cieav nvidia status                 # View model endpoint status and configuration
+cieav nvidia test                   # Run canonical CoT test ('Which number is larger, 9.11 or 9.8?')
+
 # Give the Agent Work from the CLI
 cieav work "Research three approaches and recommend one"
 cieav work --agent "Researcher" "Compare these documents"
@@ -514,6 +519,7 @@ cieav "open notepad"
 ```text
 Cieav-the-Commit-Layer-for-the-Internet/
 ├── commit_layer/
+│   ├── nvidia_engine.py         # NVIDIA Nemotron 3.5 Bolt client with Chain-of-Thought (CoT) & tool calls
 │   ├── hybrid_brain.py          # Native Qwen-3.5-9B GGUF local engine & Hugging Face auto-downloader
 │   ├── multi_agent_swarm.py     # 5-agent autonomous swarm runtime (Atlas, Codex, Crust, Ops, CFO)
 │   ├── interactive_browser.py   # Universal Interactive Browser Engine (CDP WebSocket, Chrome & Edge)

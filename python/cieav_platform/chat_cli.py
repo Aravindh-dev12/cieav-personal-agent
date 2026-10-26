@@ -637,13 +637,49 @@ def process_user_input(text: str):
             print(f"\n\033[1;32m[CIEAV PERSONAL AGENT]\033[0m {res['message']}\n")
         elif subaction == "status":
             st = dashboard_server.get_status()
+            from commit_layer.nvidia_engine import nvidia_engine
+            nv_st = nvidia_engine.get_status()
             alive_col = "\033[1;32mONLINE\033[0m" if st["is_running"] else "\033[1;33mSTANDBY (Run 'cieav personal-agent dashboard')\033[0m"
             print(f"\n[CIEAV PERSONAL AGENT STATUS]")
             print(f"  • Dashboard Service : {alive_col}")
             print(f"  • URL               : {st['url']}")
-            print(f"  • Model Provider    : {st['model_provider']} ({st['model_name']})")
+            print(f"  • Model Provider    : {'NVIDIA Nemotron 3.5 Bolt (CoT Thinking)' if nv_st['available'] else f'{st["model_provider"]} ({st["model_name"]})'}")
+            print(f"  • NVIDIA API Status : {'ACTIVE' if nv_st['available'] else 'NO KEY (Run cieav nvidia key <key>)'}")
             print(f"  • Active Threads    : {st['active_threads_count']}")
             print(f"  • Spend Cap         : ${st['spend_cap_usd']:.2f} USD\n")
+        return
+
+    # ── NVIDIA Nemotron 3.5 Bolt Endpoint (e.g. nvidia key <key>, nvidia status, nvidia test)
+    if lower.startswith("nvidia") or lower.startswith("/nvidia"):
+        parts = cmd.strip().split()
+        subaction = parts[1].lower() if len(parts) > 1 else "status"
+        from commit_layer.nvidia_engine import nvidia_engine
+        if subaction == "key":
+            val = parts[2].strip() if len(parts) > 2 else ""
+            if not val:
+                print("\n\033[1;33m[NVIDIA NEMOTRON]\033[0m Usage: nvidia key <nvapi-...>\n")
+            else:
+                nvidia_engine.set_api_key(val)
+                print(f"\n\033[1;32m[NVIDIA NEMOTRON]\033[0m API Key successfully saved! Model: {nvidia_engine.model}\n")
+        elif subaction == "status":
+            st = nvidia_engine.get_status()
+            avail_col = "\033[1;32mACTIVE (Ready for tasks)\033[0m" if st["available"] else "\033[1;33mNOT CONFIGURED (Run nvidia key <key>)\033[0m"
+            print("\n\033[1;35m[NVIDIA NEMOTRON ENGINE STATUS]\033[0m")
+            print(f"  • Endpoint        : {st['endpoint']}")
+            print(f"  • Model           : {st['model']}")
+            print(f"  • Available       : {avail_col}")
+            print(f"  • API Key         : {st['api_key_masked']}")
+            print(f"  • CoT Thinking    : \033[1;32mEnabled\033[0m (chat_template_kwargs: {{'enable_thinking': True}})\n")
+        elif subaction == "test":
+            print("\n\033[1;36m[NVIDIA NEMOTRON]\033[0m Testing live connection ('Which number is larger, 9.11 or 9.8?')...")
+            res = nvidia_engine.test_connection()
+            if res.get("status") == "success":
+                print(f"  • Status          : \033[1;32mSUCCESS\033[0m ({res.get('elapsed_sec')}s)")
+                if res.get("thinking"):
+                    print(f"  • Thinking (CoT)  :\n\033[38;2;192;132;252m{res.get('thinking')}\033[0m\n")
+                print(f"  • Response        :\n\033[1;37m{res.get('content')}\033[0m\n")
+            else:
+                print(f"  • Status          : \033[1;31mFAILED\033[0m - {res.get('error')}\n")
         return
 
     # Fast-Path: Instant Sovereign Operator Identity & Technical Knowledge Engine (0ms CPU)

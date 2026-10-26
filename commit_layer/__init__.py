@@ -30,3 +30,5 @@ from commit_layer.personal_agent import cieav_personal_agent, CieavPersonalAgent
 from commit_layer.autonomous_workforce import autonomous_workforce, AutonomousWorkforceOrchestrator
 from commit_layer.work_dispatcher import work_dispatcher, WorkDispatcher
 from commit_layer.personal_agent_dashboard import dashboard_server, PersonalAgentDashboardServer
+
+from commit_layer.nvidia_engine import nvidia_engine, NvidiaNemotronEngine
