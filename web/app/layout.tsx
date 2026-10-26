@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'CIEAV — The Commit Layer for the Internet & Autonomous Agents',
-  description: 'Deterministic safety floors, Ed25519 cryptographic receipts, and two-phase atomic rollbacks for local computer agents and web actions.',
+  title: 'CIEAV — Sovereign Open-Source Personal AI Agent',
+  description: 'Sovereign open-source personal AI agent with deterministic safety floors, Ed25519 cryptographic receipts, and two-phase atomic rollbacks.',
   generator: 'CIEAV Core',
   icons: {
     icon: [

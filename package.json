@@ -2,7 +2,7 @@
   "name": "cieav",
   "version": "0.8.0",
   "private": true,
-  "description": "CIEAV — always-on commit infrastructure for consequential digital actions.",
+  "description": "CIEAV — Sovereign open-source personal AI agent with reversible execution safety.",
   "workspaces": ["apps/*","packages/*"],
   "scripts": {
     "start": "npm run build:api && node scripts/start-production.mjs",

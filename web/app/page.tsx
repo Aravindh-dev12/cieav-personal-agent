@@ -300,7 +300,7 @@ export default function Page() {
       )
     } else if (input.toLowerCase().includes('job') || input.toLowerCase().includes('resume') || input.toLowerCase().includes('apply')) {
       newLogs.push(
-        'ALMA COMPUTER CONTROL AGENT (CIEAV COMMIT LAYER):',
+        'ALMA COMPUTER CONTROL AGENT (CIEAV SOVEREIGN SAFETY FLOOR):',
         '  [1/4] Discovered local candidate resume: C:\\Users\\Operator\\Documents\\resume.pdf',
         '  [2/4] Profile extracted: Autonomous Candidate Agent (Full Stack AI & Agentic Systems)',
         '  [3/4] Live Jobs Sourced: Tether (97%), Anthropic (98%), OpenAI (97%), Google DeepMind (96%)',
@@ -426,7 +426,7 @@ export default function Page() {
         {/* Top-Right Action Buttons */}
         <div className="flex items-center gap-2.5">
           <a
-            href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents"
+            href="https://github.com/Aravindh-dev12/cieav-personal-agent"
             target="_blank"
             rel="noreferrer"
             className="hidden items-center gap-1.5 rounded-md border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 sm:inline-flex"
@@ -607,10 +607,10 @@ export default function Page() {
                   onClick={() => {
                     const text =
                       activeInstallTab === 'powershell'
-                        ? 'irm https://raw.githubusercontent.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents/main/install.ps1 | iex'
+                        ? 'irm https://raw.githubusercontent.com/Aravindh-dev12/cieav-personal-agent/main/install.ps1 | iex'
                         : activeInstallTab === 'bash'
-                        ? 'curl -fsSL https://raw.githubusercontent.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents/main/install.sh | bash'
-                        : 'git clone https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents.git && cd Cieav-the-Commit-Layer-for-the-Agents && .\\cieav.cmd /status'
+                        ? 'curl -fsSL https://raw.githubusercontent.com/Aravindh-dev12/cieav-personal-agent/main/install.sh | bash'
+                        : 'git clone https://github.com/Aravindh-dev12/cieav-personal-agent.git && cd cieav-personal-agent && .\\cieav.cmd /status'
                     copyToClipboard(text)
                   }}
                   className="flex items-center gap-1 rounded bg-zinc-800 px-2 py-1 text-[11px] font-mono text-zinc-300 hover:bg-zinc-700"
@@ -622,11 +622,11 @@ export default function Page() {
 
               <pre className="mt-3 overflow-x-auto font-mono text-xs text-emerald-400">
                 {activeInstallTab === 'powershell' &&
-                  'irm https://raw.githubusercontent.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents/main/install.ps1 | iex'}
+                  'irm https://raw.githubusercontent.com/Aravindh-dev12/cieav-personal-agent/main/install.ps1 | iex'}
                 {activeInstallTab === 'bash' &&
-                  'curl -fsSL https://raw.githubusercontent.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents/main/install.sh | bash'}
+                  'curl -fsSL https://raw.githubusercontent.com/Aravindh-dev12/cieav-personal-agent/main/install.sh | bash'}
                 {activeInstallTab === 'git' &&
-                  'git clone https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents.git\ncd Cieav-the-Commit-Layer-for-the-Agents\n.\\cieav.cmd /status'}
+                  'git clone https://github.com/Aravindh-dev12/cieav-personal-agent.git\ncd cieav-personal-agent\n.\\cieav.cmd /status'}
               </pre>
             </div>
           </div>
@@ -680,7 +680,7 @@ export default function Page() {
               <span className="font-mono text-xs font-semibold text-zinc-400">03 / REAL-WORLD AGENT</span>
               <h2 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-950">Alma.inc-Style Computer Control Agent</h2>
               <p className="mt-1 text-sm text-zinc-500">
-                Autonomous local task execution governed by the Commit Layer. Watch CIEAV discover local resumes, research LinkedIn, and redact PII.
+                Autonomous local task execution governed by the Sovereign Safety Floor. Watch CIEAV discover local resumes, research LinkedIn, and redact PII.
               </p>
             </div>
           </div>
@@ -751,7 +751,7 @@ export default function Page() {
           <div className="flex items-center justify-between">
             <div>
               <span className="font-mono text-xs font-semibold text-zinc-400">04 / BENCHMARKS</span>
-              <h2 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-950">Decision Models vs. CIEAV Commit Layer</h2>
+              <h2 className="mt-1 text-2xl font-semibold tracking-tight text-zinc-950">Decision Models vs. CIEAV Sovereign Personal Agent</h2>
               <p className="mt-1 text-sm text-zinc-500">
                 Empirical real-world comparison across published decision models (Jev 1.13, Kev, Laya) and the CIEAV deterministic architecture.
               </p>
@@ -766,7 +766,7 @@ export default function Page() {
                   <th className="py-3 px-4 font-semibold">Jev 1.13</th>
                   <th className="py-3 px-4 font-semibold">Kev</th>
                   <th className="py-3 px-4 font-semibold">Laya</th>
-                  <th className="py-3 px-4 font-semibold bg-zinc-950 text-white">CIEAV Commit Layer</th>
+                  <th className="py-3 px-4 font-semibold bg-zinc-950 text-white">CIEAV Sovereign Personal Agent</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 text-xs">
@@ -967,7 +967,7 @@ export default function Page() {
                   CIEAV
                 </h1>
                 <p className="mt-2 text-xs sm:text-sm font-mono tracking-widest text-zinc-400 uppercase">
-                  The Commit Layer for the Internet & Autonomous Agents
+                  Sovereign Open-Source Personal AI Agent
                 </p>
               </div>
             </div>
@@ -1018,7 +1018,7 @@ export default function Page() {
               <ul className="space-y-2 text-zinc-300">
                 <li>
                   <a
-                    href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents"
+                    href="https://github.com/Aravindh-dev12/cieav-personal-agent"
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-1 hover:text-white transition"

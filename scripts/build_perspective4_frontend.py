@@ -640,7 +640,7 @@ new_landing_view = """  <!-- ===================================================
         <a href="#domains" onclick="event.preventDefault(); document.getElementById('domains').scrollIntoView({behavior:'smooth'})">4 Domains</a>
         <a href="#benchmarks" onclick="event.preventDefault(); document.getElementById('benchmarks').scrollIntoView({behavior:'smooth'})">Empirical Benchmarks</a>
         <a href="#quickstart" onclick="event.preventDefault(); document.getElementById('quickstart').scrollIntoView({behavior:'smooth'})">CLI Guide</a>
-        <a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank" rel="noreferrer">GitHub ↗</a>
       </nav>
 
       <div>
@@ -892,7 +892,7 @@ new_landing_view = """  <!-- ===================================================
 
       <div style="background:#020617; border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:24px; color:#f8fafc; font-family:var(--mono); font-size:13px; line-height:1.7;">
         <span style="color:#64748b;"># 1. Clone repository and install in editable mode</span><br>
-        <span style="color:#38bdf8;">git</span> clone https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents.git<br>
+        <span style="color:#38bdf8;">git</span> clone https://github.com/Aravindh-dev12/cieav-personal-agent.git<br>
         <span style="color:#38bdf8;">pip</span> install -e .<br><br>
         <span style="color:#64748b;"># 2. Launch interactive terminal agent</span><br>
         <span style="color:#34d399;">cieav</span><br><br>
@@ -927,18 +927,18 @@ new_landing_view = """  <!-- ===================================================
           <div class="os-footer-col">
             <h4>Protocols</h4>
             <ul>
-              <li><a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents" target="_blank">Google A2A 1.0 Spec</a></li>
-              <li><a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents" target="_blank">Anthropic MCP Manifest</a></li>
-              <li><a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents" target="_blank">Ed25519 Hash Ledger</a></li>
-              <li><a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents" target="_blank">Consequence ABI</a></li>
+              <li><a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank">Google A2A 1.0 Spec</a></li>
+              <li><a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank">Anthropic MCP Manifest</a></li>
+              <li><a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank">Ed25519 Hash Ledger</a></li>
+              <li><a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank">Consequence ABI</a></li>
             </ul>
           </div>
           <div class="os-footer-col">
             <h4>Repository</h4>
             <ul>
-              <li><a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents" target="_blank">GitHub Repository ↗</a></li>
-              <li><a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents/blob/main/LICENSE" target="_blank">MIT Open Source</a></li>
-              <li><a href="https://github.com/Aravindh-dev12/Cieav-the-Commit-Layer-for-the-Agents/blob/main/README.md" target="_blank">Documentation</a></li>
+              <li><a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank">GitHub Repository ↗</a></li>
+              <li><a href="https://github.com/Aravindh-dev12/cieav-personal-agent/blob/main/LICENSE" target="_blank">MIT Open Source</a></li>
+              <li><a href="https://github.com/Aravindh-dev12/cieav-personal-agent/blob/main/README.md" target="_blank">Documentation</a></li>
               <li><a href="javascript:void(0)">Status: 100% Operational</a></li>
             </ul>
           </div>
