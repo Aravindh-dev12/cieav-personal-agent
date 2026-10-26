@@ -2,7 +2,7 @@
 
 Allows users to chat with a coding assistant in PowerShell, CMD, or Cursor,
 with ALL file modifications, deletions, and executions strictly mediated
-by the CIEAV Commit Layer.
+by the CIEAV Sovereign Personal AI Agent.
 """
 from __future__ import annotations
 import os
@@ -443,7 +443,7 @@ def run_alma_job_search_workflow(query_text: str = ""):
     global last_committed_receipt_id
 
     print("\n" + "=" * 76)
-    print("   ALMA COMPUTER CONTROL AGENT (CIEAV COMMIT LAYER)")
+    print("   ALMA COMPUTER CONTROL AGENT (CIEAV SOVEREIGN SAFETY FLOOR)")
     print("   Autonomous Job Search & Application Governance")
     print("=" * 76)
     print("[1/4] Scanning local Windows filesystem for candidate resume...")
@@ -835,7 +835,7 @@ def process_user_input(text: str):
             if not is_auto_scheduled:
                 print(f"\n\033[38;2;16;185;129m[CIEAV] {sched_res.get('message')}\033[0m")
 
-        # Intercept and process through the 2PC Commit Layer
+        # Intercept and process through the 2PC Sovereign Safety Floor
         action = gateway.intercept(
             tool_name="generate_morning_briefing",
             args={"auto_notify": True},
@@ -1180,7 +1180,7 @@ Available Governed Commands:
   /decide <cmd>     - Query local decision model probabilities (<3ms)
   /tools            - Hermes/Instinct agent tool server catalog & JSON schema
   /hybrid           - 9B Hybrid reasoning core status & architecture
-  /status           - Inspect Commit Layer state and Ed25519 signing key
+  /status           - Inspect agent safety state and Ed25519 signing key
   /model            - Inspect local decision engine architecture
   /receipts         - View recent cryptographic Ed25519 hash-chained receipts
   /undo             - Instantly rollback the last committed action

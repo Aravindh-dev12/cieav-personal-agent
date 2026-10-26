@@ -1,4 +1,4 @@
-"""FastAPI Application for Commit Layer Gateway.
+"""FastAPI Application for CIEAV Sovereign Personal Agent Gateway.
 
 Routes:
 - GET  /                           -> Serves the unified landing page + auth modal + dashboard HTML
@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
     telemetry.flush_and_shutdown()
 
 
-app = FastAPI(title="Commit Layer Gateway", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="CIEAV Sovereign Personal Agent Gateway", version="1.0.0", lifespan=lifespan)
 
 UI_DIR = os.path.join(os.path.dirname(__file__), "ui")
 
@@ -409,7 +409,7 @@ async def api_neatlogs_ping():
 
 @app.post("/api/intent/plan")
 async def api_intent_plan(req: IntentPlanRequest):
-    """Plan a human intent across any domain bounded by the Commit Layer."""
+    """Plan a human intent across any domain bounded by the Personal Agent safety pipeline."""
     return intent.plan_intent(prompt=req.prompt, context=req.context)
 
 
@@ -544,7 +544,7 @@ async def api_poppy_create_session(req: PoppySessionRequest):
 
 @app.post("/api/poppy/conversations")
 async def api_poppy_conversations(req: PoppyConversationRequest):
-    """Governed agent conversation turn backed by Commit Layer."""
+    """Governed agent conversation turn backed by Personal Agent safety pipeline."""
     from commit_layer import poppy
     return poppy.handle_conversation(
         session_id=req.session_id,
@@ -706,7 +706,7 @@ async def api_alma_jobs():
 
 @app.post("/api/agent/alma/apply")
 async def api_alma_apply(req: AlmaApplyRequest):
-    """Intercept outbound job application dispatch via Commit Layer."""
+    """Intercept outbound job application dispatch via Personal Agent safety pipeline."""
     from commit_layer.agents.alma_job_agent import find_local_resume, parse_resume, prepare_and_govern_application
     resume_path = find_local_resume()
     if not resume_path:

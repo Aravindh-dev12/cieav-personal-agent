@@ -837,7 +837,7 @@ new_landing_view = """  <!-- ===================================================
                 <th>Jev 1.13 Decision Model</th>
                 <th>Kev (Cognitive Safety)</th>
                 <th>Laya Multi-Agent</th>
-                <th>CIEAV Commit Layer</th>
+                <th>CIEAV Sovereign Personal Agent</th>
               </tr>
             </thead>
             <tbody>
@@ -985,7 +985,7 @@ sim_script = """
         screen.innerHTML = `
 <span style="color:#38bdf8;">cieav "find jobs based on my resume and apply"</span><br>
 <span style="color:#64748b;">============================================================================</span><br>
-<span style="color:#f8fafc; font-weight:700;">   ALMA COMPUTER CONTROL AGENT (CIEAV COMMIT LAYER)</span><br>
+<span style="color:#f8fafc; font-weight:700;">   ALMA COMPUTER CONTROL AGENT (CIEAV SOVEREIGN SAFETY FLOOR)</span><br>
 <span style="color:#f8fafc;">   Autonomous Job Search &amp; Application Governance</span><br>
 <span style="color:#64748b;">============================================================================</span><br>
 <span style="color:#38bdf8;">[1/4] Scanning local Windows filesystem for candidate resume...</span><br>
@@ -1031,7 +1031,7 @@ sim_script = """
         screen.innerHTML = `
 <span style="color:#38bdf8;">cieav "pay $250 to AWS for GPU cluster"</span><br>
 <span style="color:#64748b;">============================================================================</span><br>
-<span style="color:#f8fafc; font-weight:700;">   ALMA COMPUTER CONTROL AGENT (CIEAV COMMIT LAYER)</span><br>
+<span style="color:#f8fafc; font-weight:700;">   ALMA COMPUTER CONTROL AGENT (CIEAV SOVEREIGN SAFETY FLOOR)</span><br>
 <span style="color:#f8fafc;">   Autonomous Multi-Domain Intent Execution</span><br>
 <span style="color:#64748b;">============================================================================</span><br>
 🎯 Target Intent : "pay $250 to AWS for GPU cluster"<br>
@@ -1054,7 +1054,7 @@ Type 'COMMIT' to approve: COMMIT<br>
         screen.innerHTML = `
 <span style="color:#38bdf8;">cieav "deploy service payment-worker v2.1.0"</span><br>
 <span style="color:#64748b;">============================================================================</span><br>
-<span style="color:#f8fafc; font-weight:700;">   ALMA COMPUTER CONTROL AGENT (CIEAV COMMIT LAYER)</span><br>
+<span style="color:#f8fafc; font-weight:700;">   ALMA COMPUTER CONTROL AGENT (CIEAV SOVEREIGN SAFETY FLOOR)</span><br>
 <span style="color:#f8fafc;">   Autonomous Multi-Domain Intent Execution</span><br>
 <span style="color:#64748b;">============================================================================</span><br>
 🎯 Target Intent : "deploy service payment-worker v2.1.0"<br>

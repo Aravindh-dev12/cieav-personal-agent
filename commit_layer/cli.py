@@ -1,4 +1,4 @@
-"""Native CLI for CIEAV Commit Layer (inspired by Alma: alma.inc).
+"""Native CLI for CIEAV Sovereign Open-Source Personal AI Agent.
 
 "The computer interface has changed little since the GUI made apps, windows,
 menus, and files the main way to work.
@@ -25,7 +25,7 @@ BANNER = r"""
  | |      | | |  __|   / /\ \    \ \/ /  
  | |____ _| |_| |____ / ____ \    \  /   
   \_____|_____|______/_/    \_\    \/    
-  Commit Layer for the Internet | Native Intent Interface
+  CIEAV Sovereign Personal AI Agent | Native Intent Interface
 """
 
 
@@ -43,7 +43,7 @@ def print_card(title: str, lines: list[tuple[str, str]], border_color: str = "36
 
 
 def cmd_intent(prompt: str, auto_confirm: bool = False):
-    """Process an intent through the Commit Layer."""
+    """Process an intent through the Personal Agent safety pipeline."""
     print(f"\nEvaluating Intent: {color(prompt, '1;37')}\n")
     plan = plan_intent(prompt)
     

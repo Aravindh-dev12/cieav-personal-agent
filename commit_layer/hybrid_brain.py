@@ -9,7 +9,7 @@ Combines the frontier strengths of:
    - Zero cloud APIs, zero Ollama daemon, complete offline data sovereignty
 2. Llama Strategic Architecture Persona:
    - Contract verification & component hierarchy decomposition
-3. CIEAV Cryptographic 2PC Commit Layer:
+3. CIEAV Reversible Safety Engine (2PC):
    - Real-time consequence scoring (<2ms Jev 1.14 local CPU)
    - Two-Phase Commit safety floor & single-use tokens
    - Ed25519 append-only signed hash-chain ledger
@@ -206,7 +206,7 @@ class LlamaPersona:
                 "phases": [
                     {"phase": 1, "name": "Traceback & Failure Root-Cause Analysis", "role": "Qwen-3.5-9B Reasoner"},
                     {"phase": 2, "name": "AST Code Patch Generation", "role": "Qwen-3.5-9B Coder"},
-                    {"phase": 3, "name": "Pre-Execution Snapshot & Single-Use Token", "role": "CIEAV 2PC Commit Layer"},
+                    {"phase": 3, "name": "Pre-Execution Snapshot & Single-Use Token", "role": "CIEAV Safety Engine"},
                     {"phase": 4, "name": "Hermetic Test Verification Loop", "role": "Code Healer Engine"}
                 ]
             }
@@ -219,7 +219,7 @@ class LlamaPersona:
                 "phases": [
                     {"phase": 1, "name": "Host Telemetry & Consequence Assessment", "role": "cieav-decider-v2"},
                     {"phase": 2, "name": "Native Win32 Shell / OS Tool Execution", "role": "Qwen-3.5-9B Executor"},
-                    {"phase": 3, "name": "State Snapshot & Reversible Undo Ledger", "role": "CIEAV Commit Layer"}
+                    {"phase": 3, "name": "State Snapshot & Reversible Undo Ledger", "role": "CIEAV Safety Engine"}
                 ]
             }
 
@@ -230,7 +230,7 @@ class LlamaPersona:
             "phases": [
                 {"phase": 1, "name": "Goal Analysis & Risk Classification", "role": "Qwen-3.5-9B Planner"},
                 {"phase": 2, "name": "Atomic Tool Call Synthesizer", "role": "Qwen-3.5-9B Coder"},
-                {"phase": 3, "name": "Cryptographic Execution & Ledger Audit", "role": "CIEAV Commit Layer"}
+                {"phase": 3, "name": "Cryptographic Execution & Ledger Audit", "role": "CIEAV Safety Engine"}
             ]
         }
 
@@ -420,7 +420,7 @@ class QwenCoderPersona:
 
 
 class HybridSuperAgentBrain:
-    """Unified SuperAgent Brain powered by Qwen-3.5-9B and CIEAV Commit Layer."""
+    """Unified SuperAgent Brain powered by Qwen-3.5-9B and CIEAV Sovereign Safety Floor."""
 
     def __init__(self):
         self.llama = LlamaPersona()
@@ -477,13 +477,13 @@ class HybridSuperAgentBrain:
             f"  \033[1;33mCapabilities & Role Allocations:\033[0m\n"
             f"    - \033[1;36mQwen-3.5-9B\033[0m : High-capacity reasoning, precise AST code synthesis & JSON schemas.\n"
             f"    - \033[1;36mcieav-decider\033[0m: Instant sub-2ms consequence gate and deterministic safety floor.\n"
-            f"    - \033[1;36mCommit Layer\033[0m : Verifies pre/post state, signs Ed25519 receipts, enables /undo.\n"
+            f"    - \033[1;36mSafety Engine\033[0m: Verifies pre/post state, signs Ed25519 receipts, enables /undo.\n"
             f"\033[1;35m================================================================================\033[0m"
         )
 
     def process_query(self, user_input: str, use_live_model: bool = False) -> Dict[str, Any]:
         """
-        Process user query by synergizing Qwen-3.5-9B reasoning with CIEAV Commit Layer.
+        Process user query by synergizing Qwen-3.5-9B reasoning with CIEAV Sovereign Safety Floor.
         """
         prompt = user_input.strip()
 
@@ -531,7 +531,7 @@ class HybridSuperAgentBrain:
                 "message": self._format_plan_card(prompt, plan_data, dec)
             }
 
-        # Step 4: Governed Execution under CIEAV Two-Phase Commit Layer
+        # Step 4: Governed Execution under CIEAV Reversible Safety Engine
         tool_name = tool_call["tool"]
         tool_args = tool_call["args"]
 
@@ -574,7 +574,7 @@ class HybridSuperAgentBrain:
         )
 
     def _format_execution_card(self, prompt: str, tool_call: Dict[str, Any], eval_res: Dict[str, Any], dec: Dict[str, Any]) -> str:
-        """Render terminal card visualizing Qwen tool execution and commit layer."""
+        """Render terminal card visualizing Qwen tool execution and safety engine."""
         status = eval_res.get("status", "pending")
         return (
             f"\033[1;35m[CIEAV AGENT EXECUTION | QWEN-3.5-9B CORE]\033[0m\n"
@@ -583,7 +583,7 @@ class HybridSuperAgentBrain:
             f"Synthesized Tool : \033[1;32m{tool_call['tool']}\033[0m ({tool_call['summary']})\n"
             f"Arguments        : {tool_call['args']}\n"
             f"Decision Gate    : {dec['top_choice']} (Consequence: {dec['consequence_score']:.3f} | {dec['latency_ms']:.2f}ms CPU)\n"
-            f"Commit Layer SLA : Status={status.upper()} | Reversible via /undo\n"
+            f"Safety Engine SLA: Status={status.upper()} | Reversible via /undo\n"
             f"--------------------------------------------------------------------------"
         )
 

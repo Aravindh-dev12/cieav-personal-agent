@@ -1,5 +1,5 @@
 """
-Commit Layer for the Internet package.
+CIEAV Sovereign Open-Source Personal AI Agent package.
 """
 import sys
 from pathlib import Path

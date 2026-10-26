@@ -335,7 +335,7 @@ class AutonomousLocalAgent:
             return {
                 "type": "identity",
                 "message": (
-                    "I am CIEAV (The Commit Layer for Autonomous Agents), your sovereign agentic operating system.\n"
+                    "I am CIEAV, your sovereign open-source personal AI agent.\n"
                     "I run 100% locally on your machine with 0% cloud APIs, automating software engineering,\n"
                     "OS maintenance, and DevOps workflows under cryptographic two-phase commit (/undo) safety."
                 )
@@ -352,7 +352,7 @@ class AutonomousLocalAgent:
                 "type": "conversational",
                 "message": (
                     "Everything is running smoothly! All local subsystems, telemetry monitors, and the\n"
-                    "Two-Phase Cryptographic Commit Layer are active and healthy with 0% cloud APIs.\n"
+                    "Two-Phase Cryptographic Safety Engine are active and healthy with 0% cloud APIs.\n"
                     "How can I help you today?"
                 )
             }
@@ -451,7 +451,7 @@ class AutonomousLocalAgent:
                     "1. Local Decision Model (cieav-decider-v2):\n"
                     "   • Runs on local CPU (sub-2ms inference, 0% cloud APIs).\n"
                     "   • Evaluates action risk, reversibility, and consequence before execution.\n\n"
-                    "2. Two-Phase Cryptographic Commit Layer (2PC):\n"
+                    "2. Two-Phase Cryptographic Safety Engine (2PC):\n"
                     "   • Every file mutation, tool call, or OS command is recorded in an Ed25519\n"
                     "     append-only hash chain.\n"
                     "   • Full Lossless Undo: run '/undo' anytime to roll back state byte-for-byte.\n\n"
@@ -512,7 +512,7 @@ class AutonomousLocalAgent:
                     f"Target Objective: {target_goal}\n\n"
                     f"Phase 1: Architecture & Data Modeling\n"
                     f"  • Define system contracts, schemas, and local state boundaries.\n"
-                    f"  • Establish deterministic security policies under CIEAV Commit Layer.\n\n"
+                    f"  • Establish deterministic security policies under the CIEAV Sovereign Safety Floor.\n\n"
                     f"Phase 2: Core Engine & Implementation\n"
                     f"  • Scaffold project modular components with TypeScript / Python.\n"
                     f"  • Integrate verified cryptographic telemetry and 2PC audit logging.\n\n"
@@ -1037,7 +1037,7 @@ if __name__ == "__main__":
             return {
                 "type": "explanation",
                 "message": (
-                    "[LOCK] [CIEAV TWO-PHASE COMMIT LAYER & GOVERNANCE]\n"
+                    "[LOCK] [CIEAV SOVEREIGN SAFETY FLOOR & REVERSIBLE EXECUTION]\n"
                     "--------------------------------------------------------------------------\n"
                     "CIEAV enforces cryptographic two-phase commit safety for all AI operations:\n\n"
                     "• Phase 1 (Prepare): The intent is evaluated by local AST decider (cieav-decider-v2)\n"
@@ -1109,7 +1109,7 @@ if __name__ == "__main__":
                 task_part = re.sub(r'^(?:can\s+you|can\s+u|are\s+you\s+able\s+to|could\s+you)\s+', '', prompt, flags=re.IGNORECASE).rstrip("?").strip()
                 ans_msg = (
                     f"Yes! I am fully capable of handling '{task_part}'.\n"
-                    f"All operations run locally with 0% cloud APIs and are governed by the Commit Layer.\n"
+                    f"All operations run locally with 0% cloud APIs and are governed by the Sovereign Safety Floor.\n"
                     f"To execute this autonomously right now, run:\n"
                     f"  goal {task_part}\n"
                     f"Or tell me to 'proceed' and I will begin the execution workflow."

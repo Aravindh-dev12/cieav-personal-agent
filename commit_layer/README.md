@@ -1,8 +1,8 @@
-# Commit Layer: Gateway Architecture & Core Modules
+# CIEAV: Sovereign Safety Floor & Gateway Architecture
 
 > *"Committed is not the same as succeeded."*
 
-The `commit_layer` package provides the runtime control plane that mediates actions between autonomous AI agents and consequential side effects.
+The `commit_layer` package provides the sovereign safety control plane that mediates actions between autonomous personal AI agents and consequential side effects.
 
 ---
 
@@ -13,7 +13,7 @@ Agent / MCP Client / Caller
             │
             ▼
 ┌──────────────────────────────────────────────┐
-│             COMMIT LAYER GATEWAY             │
+│             CIEAV SAFETY GATEWAY             │
 │                                              │
 │  1. Intercept & Normalize Tool Call          │
 │  2. Sanitize & Redact Secrets (privacy.py)   │

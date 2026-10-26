@@ -11,8 +11,8 @@
 ══════════════════════════════════════════════════════════════════════════════
 ```
 
-# CIEAV: The Sovereign Computer-Control Agent OS
-> **Autonomous Computer Control with Guaranteed Lossless Rollback (Like Alma.inc & Claude Code)**
+# CIEAV: Sovereign Open-Source Personal AI Agent
+> **Autonomous Local-First Personal Agent with Reversible Execution & Guaranteed Lossless Rollback**
 
 ⚡ **Instant Launch**: Clone and double-click **`Start-CIEAV.bat`** (or run `cieav` in PowerShell) to start the autonomous agent runtime!
 
@@ -42,9 +42,9 @@ Modern autonomous AI agents (such as Claude Code, Cursor, AutoGPT, and computer-
 - **No Rollback Capability**: Once a destructive action executes, traditional agent architectures have zero mechanism to undo the damage.
 
 ### The Solution: CIEAV
-**CIEAV is the transaction coordinator and commit layer for autonomous agents.** It introduces an architectural separation of **Reasoning** from **Execution**:
-- **Reasoning Layer (Agent)**: Free to plan, think, explore, and propose candidate actions.
-- **Commit Layer (CIEAV)**: The authoritative local gateway. Tools **cannot execute** without a single-use, 60-second cryptographic token issued by CIEAV.
+**CIEAV is a sovereign open-source personal AI agent with a built-in safety coordinator and reversible execution engine.** It introduces an architectural separation of **Reasoning** from **Governed Execution**:
+- **Reasoning Layer (Agent)**: Free to plan, think, explore, converse, and propose candidate actions using NVIDIA Nemotron, MiniMax-M3.1-Flash MoE, or local models.
+- **Sovereign Safety Floor (CIEAV Gateway)**: The authoritative local gateway. Tools **cannot execute** without deterministic safety checks, cryptographic verification, and single-use permits.
 
 ```
 
@@ -110,7 +110,7 @@ However, granting an unconstrained AI model direct control over your laptop intr
 - Shell commands can leak private keys or environment variables.
 
 ### CIEAV Governed Laptop Control (`cieav chat`)
-CIEAV provides the missing **Commit Layer for Computer-Use Agents**. It enables you to control your laptop, git repositories, and shell commands through natural language while ensuring that **no destructive action executes without your explicit, governed approval and instant rollback ability**:
+CIEAV provides a **Sovereign Safety Floor for Computer-Use & Personal Tasks**. It enables you to control your laptop, git repositories, and shell commands through natural language while ensuring that **no destructive action executes without your explicit, governed approval and instant rollback ability**:
 
 ```powershell
 # Launch the interactive terminal agent
@@ -525,7 +525,7 @@ cieav "open notepad"
 ## 8. Directory Structure
 
 ```text
-Cieav-the-Commit-Layer-for-the-Internet/
+cieav-personal-agent/
 ├── commit_layer/
 │   ├── cindy_layer.py           # Cindy Reviewer (P0-P3 Findings), Orca Teaming & Parity tools
 │   ├── nvidia_engine.py         # MiniMax-M3.1-Flash (MoE Agentic Workflows, 16k context, Vision) & Nemotron

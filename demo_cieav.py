@@ -1,5 +1,5 @@
 """
-CIEAV — The Commit Layer for AI Agents
+CIEAV — Sovereign Open-Source Personal AI Agent
 Live Real-World Developer Demo
 
 Run directly on your laptop:
@@ -10,7 +10,7 @@ from commit_layer import gateway, sandbox, receipts
 
 def main():
     print("=" * 60)
-    print("  CIEAV: THE COMMIT LAYER FOR AUTONOMOUS AI AGENTS")
+    print("  CIEAV: SOVEREIGN OPEN-SOURCE PERSONAL AI AGENT")
     print("=" * 60)
     
     # Reset to a clean state
