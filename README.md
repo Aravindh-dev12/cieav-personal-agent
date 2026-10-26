@@ -482,10 +482,13 @@ cieav personal-agent setup          # Initialize local workspace & local model c
 cieav personal-agent dashboard      # Launch persistent web workspace on http://127.0.0.1:6796
 cieav personal-agent status         # Check background server, threads, and spend cap
 
-# NVIDIA Nemotron 3.5 Bolt Inference Engine (Free API + CoT Thinking)
+# NVIDIA Cloud Inference: MiniMax-M3.1-Flash (MoE Agentic Workflows) & Nemotron-3.5-Bolt
 cieav nvidia key <nvapi-...>        # Configure & save NVIDIA API key
-cieav nvidia status                 # View model endpoint status and configuration
-cieav nvidia test                   # Run canonical CoT test ('Which number is larger, 9.11 or 9.8?')
+cieav nvidia model minimax          # Set active model: minimaxai/minimax-m3.1-flash (MoE, 16k tokens, Vision)
+cieav nvidia model nemotron         # Set active model: nvidia/nemotron-3.5-bolt-e4b (CoT Deep Reasoning)
+cieav nvidia vision <img_url_path>  # Multimodal analysis for computer use & desktop inspection
+cieav nvidia status                 # View model capabilities, token limits, and status
+cieav nvidia test                   # Run live validation test
 
 # Give the Agent Work from the CLI
 cieav work "Research three approaches and recommend one"
@@ -519,7 +522,7 @@ cieav "open notepad"
 ```text
 Cieav-the-Commit-Layer-for-the-Internet/
 ├── commit_layer/
-│   ├── nvidia_engine.py         # NVIDIA Nemotron 3.5 Bolt client with Chain-of-Thought (CoT) & tool calls
+│   ├── nvidia_engine.py         # MiniMax-M3.1-Flash (MoE Agentic Workflows, 16k context, Vision) & Nemotron
 │   ├── hybrid_brain.py          # Native Qwen-3.5-9B GGUF local engine & Hugging Face auto-downloader
 │   ├── multi_agent_swarm.py     # 5-agent autonomous swarm runtime (Atlas, Codex, Crust, Ops, CFO)
 │   ├── interactive_browser.py   # Universal Interactive Browser Engine (CDP WebSocket, Chrome & Edge)

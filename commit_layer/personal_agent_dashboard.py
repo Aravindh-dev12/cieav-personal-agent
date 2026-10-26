@@ -664,8 +664,8 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         <div style="display:flex; align-items:center; gap:0.6rem;">
           <span style="font-size:1.3rem;">⚡</span>
           <div>
-            <h2 style="font-size:1.05rem; font-weight:700; color:#fff;">NVIDIA Nemotron 3.5 Bolt</h2>
-            <p style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">Free Cloud Endpoint • CoT Thinking Enabled</p>
+            <h2 style="font-size:1.05rem; font-weight:700; color:#fff;">NVIDIA Cloud Intelligence Engine</h2>
+            <p style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">MiniMax-M3.1-Flash (MoE Agentic Workflows) & Nemotron-3.5-Bolt</p>
           </div>
         </div>
         <button onclick="closeNvidiaModal()" class="btn-close">✕</button>
@@ -677,11 +677,17 @@ DASHBOARD_HTML = """<!DOCTYPE html>
           <button onclick="toggleKeyVisibility()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:0 0.75rem; color:#cbd5e1; cursor:pointer;" id="toggle-key-btn">Show</button>
         </div>
 
-        <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.75rem; font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">
-          <div><strong>Model:</strong> <code>nvidia/nemotron-3.5-bolt-e4b</code></div>
+        <label style="font-size:0.78rem; font-weight:600; color:#cbd5e1; display:block; margin-bottom:0.35rem;">Active Inference Model</label>
+        <select id="nv-model-select" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:0.6rem 0.8rem; color:#fff; font-size:0.82rem; margin-bottom:1rem; outline:none;" onchange="onModelChange()">
+          <option value="minimaxai/minimax-m3.1-flash">MiniMax-M3.1-Flash (MoE Agentic Workflows, Coding, Computer Use, Vision • 16k tokens)</option>
+          <option value="nvidia/nemotron-3.5-bolt-e4b">Nemotron 3.5 Bolt (Chain-of-Thought Deep Reasoning • CoT tokens)</option>
+        </select>
+
+        <div id="nv-model-info" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:0.75rem; font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">
+          <div><strong>Active Model:</strong> <code id="lbl-active-model">minimaxai/minimax-m3.1-flash</code></div>
           <div><strong>Endpoint:</strong> <code>https://integrate.api.nvidia.com/v1/chat/completions</code></div>
-          <div><strong>Features:</strong> Chain-of-Thought (enable_thinking=True), Tool Calling, Streaming</div>
-          <div style="margin-top:0.4rem; color:var(--emerald);"><strong>Cost:</strong> Free Tier API provided by NVIDIA NGC</div>
+          <div><strong>Capabilities:</strong> Coding, Agentic Workflows, Computer Use, Cybersecurity, Multimodal Vision</div>
+          <div style="margin-top:0.4rem; color:var(--emerald);"><strong>Cost:</strong> Free Tier API provided by NVIDIA NGC (Zero Cost)</div>
         </div>
 
         <div id="nv-test-area" style="display:none; margin-bottom:1rem;">
@@ -711,8 +717,16 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         const nvPill = document.getElementById("nvidia-pill");
         if (st.nvidia && st.nvidia.available) {
           nvPill.className = "pill pill-green";
-          nvPill.innerHTML = "⚡ NEMOTRON 3.5 (CoT ACTIVE)";
-          modelPill.textContent = "NVIDIA NEMOTRON 3.5";
+          if (st.nvidia.is_minimax) {
+            nvPill.innerHTML = "⚡ MINIMAX-M3.1 FLASH (AGENTIC MOE)";
+            modelPill.textContent = "MINIMAX-M3.1 FLASH";
+          } else {
+            nvPill.innerHTML = "⚡ NEMOTRON 3.5 (CoT ACTIVE)";
+            modelPill.textContent = "NEMOTRON 3.5 BOLT";
+          }
+          if (document.getElementById("nv-model-select")) {
+            document.getElementById("nv-model-select").value = st.nvidia.model;
+          }
         } else {
           nvPill.className = "pill pill-amber";
           nvPill.innerHTML = "⚡ NVIDIA: NO KEY";
@@ -729,7 +743,24 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         if (st.api_key_masked && !st.api_key_masked.startsWith("Not")) {
           document.getElementById("nv-key-input").placeholder = st.api_key_masked;
         }
+        if (st.model && document.getElementById("nv-model-select")) {
+          document.getElementById("nv-model-select").value = st.model;
+          document.getElementById("lbl-active-model").textContent = st.model;
+        }
       }).catch(e => {});
+    }
+
+    async function onModelChange() {
+      const selected = document.getElementById("nv-model-select").value;
+      document.getElementById("lbl-active-model").textContent = selected;
+      try {
+        await fetch("/api/nvidia/model", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ model: selected })
+        });
+        checkStatus();
+      } catch (e) {}
     }
 
     function closeNvidiaModal() {
@@ -1091,8 +1122,17 @@ class PersonalAgentHandler(BaseHTTPRequestHandler):
         if path == "/api/nvidia/key":
             from commit_layer.nvidia_engine import nvidia_engine
             key = req_data.get("api_key", "").strip()
+            model_target = req_data.get("model", "").strip()
+            if model_target:
+                nvidia_engine.set_model(model_target)
             nvidia_engine.set_api_key(key)
-            return self._send_json(200, {"status": "success", "message": "NVIDIA API key updated", "nvidia": nvidia_engine.get_status()})
+            return self._send_json(200, {"status": "success", "message": "NVIDIA API key & model updated", "nvidia": nvidia_engine.get_status()})
+
+        if path == "/api/nvidia/model":
+            from commit_layer.nvidia_engine import nvidia_engine
+            model_target = req_data.get("model", "").strip()
+            resolved = nvidia_engine.set_model(model_target)
+            return self._send_json(200, {"status": "success", "model": resolved, "nvidia": nvidia_engine.get_status()})
 
         if path == "/api/nvidia/test":
             from commit_layer.nvidia_engine import nvidia_engine

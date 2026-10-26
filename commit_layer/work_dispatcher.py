@@ -289,7 +289,7 @@ class WorkDispatcher:
 {c_purple}╠════════════════════════════════════════════════════════════════════════════════════════════╣{rst}
   {c_white}Task Directive   :{rst} {c_white}"{task}"{rst}
   {c_white}Assigned Squad   :{rst} {c_cyan}{agent_name}{rst}
-  {c_white}Execution Core   :{rst} {"NVIDIA Nemotron 3.5 Bolt (CoT Thinking)" if nvidia_engine.is_available() else "100% Local CPU • In-Process Sovereign Runtime"}
+  {c_white}Execution Core   :{rst} {("NVIDIA MiniMax-M3.1-Flash (MoE Agentic Workflows)" if "minimax" in nvidia_engine.model else "NVIDIA Nemotron 3.5 Bolt (CoT Thinking)") if nvidia_engine.is_available() else "100% Local CPU • In-Process Sovereign Runtime"}
   {c_white}Ed25519 Receipt  :{rst} {c_amber}{receipt_id}{rst}
   {c_white}Local Dashboard  :{rst} {c_emerald}{dashboard_url}{rst}
 {c_purple}╟────────────────────────────────────────────────────────────────────────────────────────────╢{rst}

@@ -649,7 +649,7 @@ def process_user_input(text: str):
             print(f"  • Spend Cap         : ${st['spend_cap_usd']:.2f} USD\n")
         return
 
-    # ── NVIDIA Nemotron 3.5 Bolt Endpoint (e.g. nvidia key <key>, nvidia status, nvidia test)
+    # ── NVIDIA Cloud Inference Engine (MiniMax-M3.1-Flash MoE & Nemotron-3.5-Bolt)
     if lower.startswith("nvidia") or lower.startswith("/nvidia"):
         parts = cmd.strip().split()
         subaction = parts[1].lower() if len(parts) > 1 else "status"
@@ -657,21 +657,47 @@ def process_user_input(text: str):
         if subaction == "key":
             val = parts[2].strip() if len(parts) > 2 else ""
             if not val:
-                print("\n\033[1;33m[NVIDIA NEMOTRON]\033[0m Usage: nvidia key <nvapi-...>\n")
+                print("\n\033[1;33m[NVIDIA INFERENCE ENGINE]\033[0m Usage: nvidia key <nvapi-...>\n")
             else:
                 nvidia_engine.set_api_key(val)
-                print(f"\n\033[1;32m[NVIDIA NEMOTRON]\033[0m API Key successfully saved! Model: {nvidia_engine.model}\n")
+                print(f"\n\033[1;32m[NVIDIA INFERENCE ENGINE]\033[0m API Key saved! Active Model: {nvidia_engine.model}\n")
+        elif subaction == "model":
+            val = parts[2].strip() if len(parts) > 2 else ""
+            if not val:
+                print(f"\nActive Model: {nvidia_engine.model}")
+                print("Usage: nvidia model minimax | nemotron\n")
+            else:
+                resolved = nvidia_engine.set_model(val)
+                print(f"\n\033[1;32m[NVIDIA INFERENCE ENGINE]\033[0m Active model switched to: {resolved}\n")
+        elif subaction == "vision":
+            img_src = parts[2].strip() if len(parts) > 2 else ""
+            prompt_str = " ".join(parts[3:]).strip() if len(parts) > 3 else "Analyze this image and describe details for agentic workflows."
+            if not img_src:
+                print("\n\033[1;33m[NVIDIA MINIMAX VISION]\033[0m Usage: nvidia vision <image_path_or_url> [prompt]\n")
+            else:
+                print(f"\n\033[1;36m[NVIDIA MINIMAX VISION]\033[0m Analyzing image: '{img_src}'...")
+                res = nvidia_engine.analyze_multimodal(prompt=prompt_str, image_source=img_src)
+                if res.get("status") == "success":
+                    print(f"  • Model    : {res.get('model')}")
+                    print(f"  • Latency  : {res.get('elapsed_sec')}s")
+                    print(f"  • Analysis :\n\033[1;37m{res.get('content')}\033[0m\n")
+                else:
+                    print(f"  • Error    : \033[1;31m{res.get('error')}\033[0m\n")
         elif subaction == "status":
             st = nvidia_engine.get_status()
+            caps = st.get("capabilities", {})
             avail_col = "\033[1;32mACTIVE (Ready for tasks)\033[0m" if st["available"] else "\033[1;33mNOT CONFIGURED (Run nvidia key <key>)\033[0m"
-            print("\n\033[1;35m[NVIDIA NEMOTRON ENGINE STATUS]\033[0m")
-            print(f"  • Endpoint        : {st['endpoint']}")
-            print(f"  • Model           : {st['model']}")
-            print(f"  • Available       : {avail_col}")
-            print(f"  • API Key         : {st['api_key_masked']}")
-            print(f"  • CoT Thinking    : \033[1;32mEnabled\033[0m (chat_template_kwargs: {{'enable_thinking': True}})\n")
+            print("\n\033[1;35m[NVIDIA INFERENCE ENGINE STATUS]\033[0m")
+            print(f"  • Endpoint          : {st['endpoint']}")
+            print(f"  • Active Model      : \033[1;36m{st['model']}\033[0m")
+            print(f"  • Available         : {avail_col}")
+            print(f"  • API Key           : {st['api_key_masked']}")
+            print(f"  • Max Tokens        : {caps.get('max_tokens')}")
+            print(f"  • Multimodal Vision : {'YES' if caps.get('multimodal_vision') else 'NO'}")
+            print(f"  • MoE Workflows     : {'YES (Coding, Agentic, Computer Use, Security)' if caps.get('coding_moe') else 'NO'}")
+            print(f"  • Available Models  : {', '.join(st.get('supported_models', []))}\n")
         elif subaction == "test":
-            print("\n\033[1;36m[NVIDIA NEMOTRON]\033[0m Testing live connection ('Which number is larger, 9.11 or 9.8?')...")
+            print(f"\n\033[1;36m[NVIDIA INFERENCE ENGINE]\033[0m Testing live connection with '{nvidia_engine.model}'...")
             res = nvidia_engine.test_connection()
             if res.get("status") == "success":
                 print(f"  • Status          : \033[1;32mSUCCESS\033[0m ({res.get('elapsed_sec')}s)")

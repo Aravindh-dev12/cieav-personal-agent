@@ -258,9 +258,10 @@ def main():
     p_pa.add_argument("subaction", choices=["setup", "dashboard", "status"], help="Action to execute")
 
     # nvidia command
-    p_nvidia = subparsers.add_parser("nvidia", help="NVIDIA Nemotron 3.5 Bolt configuration and testing")
-    p_nvidia.add_argument("action", choices=["key", "status", "test"], help="Action: key <your_key>, status, or test")
-    p_nvidia.add_argument("val", nargs="?", default="", help="API key string (for 'key' action)")
+    p_nvidia = subparsers.add_parser("nvidia", help="NVIDIA Cloud Engine (MiniMax-M3.1-Flash & Nemotron-3.5-Bolt)")
+    p_nvidia.add_argument("action", choices=["key", "model", "vision", "status", "test"], help="Action: key, model, vision, status, or test")
+    p_nvidia.add_argument("val", nargs="?", default="", help="Value: API key, model alias, or image path/URL")
+    p_nvidia.add_argument("extra", nargs="?", default="", help="Additional prompt or parameters (e.g. for vision)")
 
     args = parser.parse_args()
 
@@ -338,17 +339,43 @@ def main():
                 print("\nUsage: cieav nvidia key nvapi-...\n")
             else:
                 nvidia_engine.set_api_key(args.val)
-                print(f"\n[NVIDIA NEMOTRON] API Key successfully configured and saved! Model: {nvidia_engine.model}\n")
+                print(f"\n[NVIDIA INFERENCE ENGINE] API Key saved! Active Model: {nvidia_engine.model}\n")
+        elif args.action == "model":
+            if not args.val:
+                print(f"\nActive Model: {nvidia_engine.model}")
+                print("Supported choices: minimax (MiniMax-M3.1-Flash), nemotron (Nemotron-3.5-Bolt)")
+                print("Usage: cieav nvidia model minimax | nemotron\n")
+            else:
+                resolved = nvidia_engine.set_model(args.val)
+                print(f"\n[NVIDIA INFERENCE ENGINE] Active model switched to: {resolved}\n")
+        elif args.action == "vision":
+            img_src = args.val
+            prompt_str = args.extra or "Analyze this image and describe what is visible for agentic workflows."
+            if not img_src:
+                print("\nUsage: cieav nvidia vision <image_path_or_url> [optional prompt]\n")
+            else:
+                print(f"\n[NVIDIA MINIMAX VISION] Analyzing image: '{img_src}'...")
+                res = nvidia_engine.analyze_multimodal(prompt=prompt_str, image_source=img_src)
+                if res.get("status") == "success":
+                    print(f"  • Model    : {res.get('model')}")
+                    print(f"  • Latency  : {res.get('elapsed_sec')}s")
+                    print(f"  • Analysis :\n{res.get('content')}\n")
+                else:
+                    print(f"  • Error    : {res.get('error')}\n")
         elif args.action == "status":
             st = nvidia_engine.get_status()
-            print("\n[NVIDIA NEMOTRON ENGINE STATUS]")
-            print(f"  • Endpoint        : {st['endpoint']}")
-            print(f"  • Model           : {st['model']}")
-            print(f"  • Available       : {'ACTIVE (Ready for tasks)' if st['available'] else 'NOT CONFIGURED (Run cieav nvidia key <key>)'}")
-            print(f"  • API Key         : {st['api_key_masked']}")
-            print(f"  • CoT Thinking    : Enabled (chat_template_kwargs: {{'enable_thinking': True}})\n")
+            caps = st.get("capabilities", {})
+            print("\n[NVIDIA INFERENCE ENGINE STATUS]")
+            print(f"  • Endpoint          : {st['endpoint']}")
+            print(f"  • Active Model      : {st['model']}")
+            print(f"  • Available         : {'ACTIVE (Ready for tasks)' if st['available'] else 'NOT CONFIGURED (Run cieav nvidia key <key>)'}")
+            print(f"  • API Key           : {st['api_key_masked']}")
+            print(f"  • Max Tokens        : {caps.get('max_tokens')}")
+            print(f"  • Multimodal Vision : {'YES' if caps.get('multimodal_vision') else 'NO'}")
+            print(f"  • MoE Workflows     : {'YES (Coding, Agentic, Computer Use, Security)' if caps.get('coding_moe') else 'NO'}")
+            print(f"  • Available Models  : {', '.join(st.get('supported_models', []))}\n")
         elif args.action == "test":
-            print("\n[NVIDIA NEMOTRON] Testing connection with prompt: 'Which number is larger, 9.11 or 9.8?'...")
+            print(f"\n[NVIDIA INFERENCE ENGINE] Testing connection with active model: '{nvidia_engine.model}'...")
             res = nvidia_engine.test_connection()
             if res.get("status") == "success":
                 print(f"  • Status          : SUCCESS ({res.get('elapsed_sec')}s)")

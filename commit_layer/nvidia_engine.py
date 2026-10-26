@@ -1,17 +1,18 @@
 """
-NVIDIA Nemotron 3.5 Bolt Inference Engine for CIEAV.
-===================================================
-Integrates NVIDIA's free API endpoint for high-throughput agentic chat,
-chain-of-thought thinking, and autonomous task reasoning under Two-Phase Commit governance:
+NVIDIA Inference Engine for CIEAV: MiniMax-M3.1-Flash & Nemotron-3.5-Bolt.
+==========================================================================
+Integrates NVIDIA's API catalog endpoints for high-throughput multimodal
+agentic workflows, coding, computer use, cybersecurity, and reasoning under Two-Phase Commit governance:
 
-Endpoint: https://integrate.api.nvidia.com/v1/chat/completions
-Model:    nvidia/nemotron-3.5-bolt-e4b
-Features:
-  - Native chain-of-thought thinking (chat_template_kwargs: {"enable_thinking": True})
-  - Parallel tool calling support
-  - Full streaming & non-streaming responses
-  - 100% graceful fallback to local CPU (Qwen GGUF) when offline or without key
-  - Dynamic API key configuration (env, workspace settings, or CLI)
+Supported Models:
+  1. minimaxai/minimax-m3.1-flash (Default for Agentic Workflows):
+     - Native multimodal mixture-of-experts (MoE)
+     - Specialized in: Coding, Agentic Workflows, Computer Use, and Cybersecurity
+     - Massive context: 16,384 output tokens
+     - Multimodal vision support (text + image_url / base64 screenshots)
+  2. nvidia/nemotron-3.5-bolt-e4b:
+     - Native chain-of-thought (CoT) reasoning
+     - Deep decomposition & comparative synthesis
 """
 
 from __future__ import annotations
@@ -19,21 +20,35 @@ import os
 import re
 import json
 import time
+import base64
 import logging
-from typing import Any, Dict, Generator, List, Optional, Tuple
+from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 
 import requests
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions"
-DEFAULT_MODEL = "nvidia/nemotron-3.5-bolt-e4b"
+
+MODEL_MINIMAX_FLASH = "minimaxai/minimax-m3.1-flash"
+MODEL_NEMOTRON_BOLT = "nvidia/nemotron-3.5-bolt-e4b"
+DEFAULT_MODEL = MODEL_MINIMAX_FLASH
+
+MODEL_ALIASES = {
+    "minimax": MODEL_MINIMAX_FLASH,
+    "minimax-m3.1-flash": MODEL_MINIMAX_FLASH,
+    "minimaxai/minimax-m3.1-flash": MODEL_MINIMAX_FLASH,
+    "nemotron": MODEL_NEMOTRON_BOLT,
+    "nemotron-3.5-bolt": MODEL_NEMOTRON_BOLT,
+    "nvidia/nemotron-3.5-bolt-e4b": MODEL_NEMOTRON_BOLT,
+}
+
 WORKSPACE_DIR = os.path.join(os.path.dirname(__file__), "..", "personal_agent_workspace")
 SETTINGS_FILE = os.path.join(WORKSPACE_DIR, "settings.json")
 
 
-class NvidiaNemotronEngine:
-    """Client for NVIDIA Nemotron 3.5 Bolt reasoning engine."""
+class NvidiaInferenceEngine:
+    """Multi-model client for NVIDIA's build API endpoints."""
 
     def __init__(
         self,
@@ -42,12 +57,51 @@ class NvidiaNemotronEngine:
         endpoint: str = DEFAULT_ENDPOINT,
     ):
         self._explicit_key = api_key
-        self.model = model or DEFAULT_MODEL
         self.endpoint = endpoint or DEFAULT_ENDPOINT
+        # Read saved model if available
+        self.model = self._load_saved_model(model or DEFAULT_MODEL)
+
+    def _load_saved_model(self, fallback: str) -> str:
+        if os.path.exists(SETTINGS_FILE):
+            try:
+                with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+                    settings = json.load(f)
+                    m = settings.get("nvidia_model") or settings.get("model_name")
+                    if m in MODEL_ALIASES.values():
+                        return m
+            except Exception:
+                pass
+        return fallback
 
     # ──────────────────────────────────────────────────────────────────────────
-    # API Key & Availability Management
+    # Model Selection & Status
     # ──────────────────────────────────────────────────────────────────────────
+
+    def set_model(self, model_name: str, persist: bool = True) -> str:
+        """Switch active model between MiniMax-M3.1-Flash and Nemotron."""
+        clean = model_name.strip().lower()
+        resolved = MODEL_ALIASES.get(clean) or MODEL_ALIASES.get(clean.split("/")[-1])
+        if not resolved:
+            resolved = model_name.strip()
+
+        self.model = resolved
+
+        if persist:
+            try:
+                os.makedirs(WORKSPACE_DIR, exist_ok=True)
+                current = {}
+                if os.path.exists(SETTINGS_FILE):
+                    with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+                        current = json.load(f)
+                current["nvidia_model"] = resolved
+                current["model_name"] = resolved
+                current["model_provider"] = "nvidia"
+                with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+                    json.dump(current, f, indent=2)
+            except Exception as e:
+                logger.warning(f"Failed to persist model setting: {e}")
+
+        return resolved
 
     def get_api_key(self) -> Optional[str]:
         """
@@ -90,7 +144,8 @@ class NvidiaNemotronEngine:
                     with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
                         current = json.load(f)
                 current["nvidia_api_key"] = cleaned
-                current["model_provider"] = "nvidia_nemotron"
+                current["nvidia_model"] = self.model
+                current["model_provider"] = "nvidia"
                 current["model_name"] = self.model
                 with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
                     json.dump(current, f, indent=2)
@@ -98,25 +153,38 @@ class NvidiaNemotronEngine:
                 logger.warning(f"Failed to persist NVIDIA key to {SETTINGS_FILE}: {e}")
 
     def is_available(self) -> bool:
-        """Returns True if a non-empty API key is configured."""
+        """Returns True if a valid API key is configured."""
         key = self.get_api_key()
         return bool(key and len(key) > 5)
 
     def get_status(self) -> Dict[str, Any]:
-        """Return diagnostic status of the NVIDIA engine."""
+        """Return diagnostic status of the NVIDIA inference engine."""
         key = self.get_api_key()
         masked = f"{key[:7]}...{key[-4:]}" if key and len(key) > 12 else ("Configured" if key else "Not set")
+        is_minimax = "minimax" in self.model
         return {
             "available": self.is_available(),
             "model": self.model,
             "endpoint": self.endpoint,
             "api_key_masked": masked,
-            "thinking_enabled": True,
-            "parallel_tool_calls": True
+            "supported_models": [
+                MODEL_MINIMAX_FLASH,
+                MODEL_NEMOTRON_BOLT
+            ],
+            "is_minimax": is_minimax,
+            "capabilities": {
+                "agentic_workflows": True,
+                "coding_moe": is_minimax,
+                "multimodal_vision": is_minimax,
+                "computer_use": True,
+                "cybersecurity": True,
+                "cot_thinking": not is_minimax,
+                "max_tokens": 16384 if is_minimax else 2048,
+            }
         }
 
     # ──────────────────────────────────────────────────────────────────────────
-    # Non-Streaming Completion
+    # Chat & Multimodal Completions
     # ──────────────────────────────────────────────────────────────────────────
 
     def chat_completion(
@@ -124,15 +192,16 @@ class NvidiaNemotronEngine:
         messages: List[Dict[str, Any]],
         temperature: float = 1.0,
         top_p: float = 0.95,
-        max_tokens: int = 1024,
-        seed: int = 42,
+        max_tokens: Optional[int] = None,
+        seed: Optional[int] = None,
         enable_thinking: bool = True,
         tools: Optional[List[Dict[str, Any]]] = None,
-        timeout: int = 45,
+        timeout: int = 60,
     ) -> Dict[str, Any]:
         """
-        Execute chat completion against NVIDIA Nemotron 3.5 Bolt.
-        Extracts both chain-of-thought reasoning and final answer text.
+        Execute completion against MiniMax-M3.1-Flash or Nemotron-3.5-Bolt.
+        Supports multimodal content:
+          content: [{"type": "text", "text": "..."}, {"type": "image_url", "image_url": {"url": "..."}}]
         """
         api_key = self.get_api_key()
         if not api_key:
@@ -150,6 +219,14 @@ class NvidiaNemotronEngine:
             "Content-Type": "application/json"
         }
 
+        is_minimax = "minimax" in self.model
+
+        # Token & seed defaults customized per model spec
+        if max_tokens is None:
+            max_tokens = 16384 if is_minimax else 1024
+        if seed is None:
+            seed = 0 if is_minimax else 42
+
         payload: Dict[str, Any] = {
             "model": self.model,
             "messages": messages,
@@ -158,11 +235,12 @@ class NvidiaNemotronEngine:
             "max_tokens": max_tokens,
             "seed": seed,
             "stream": False,
-            "parallel_tool_calls": True,
-            "chat_template_kwargs": {
-                "enable_thinking": enable_thinking
-            }
         }
+
+        # Model-specific parameters
+        if not is_minimax:
+            payload["parallel_tool_calls"] = True
+            payload["chat_template_kwargs"] = {"enable_thinking": enable_thinking}
 
         if tools:
             payload["tools"] = tools
@@ -194,8 +272,13 @@ class NvidiaNemotronEngine:
             thinking = msg.get("reasoning_content") or ""
             raw_content = msg.get("content") or ""
 
+            # If content is a list of blocks, extract text
+            if isinstance(raw_content, list):
+                text_parts = [b.get("text", "") for b in raw_content if isinstance(b, dict) and b.get("type") == "text"]
+                raw_content = "".join(text_parts)
+
             # If thinking is embedded in <think> tags within content
-            if not thinking and "<think>" in raw_content:
+            if not thinking and "<think>" in str(raw_content):
                 think_match = re.search(r'<think>(.*?)</think>', raw_content, flags=re.DOTALL)
                 if think_match:
                     thinking = think_match.group(1).strip()
@@ -235,19 +318,14 @@ class NvidiaNemotronEngine:
         messages: List[Dict[str, Any]],
         temperature: float = 1.0,
         top_p: float = 0.95,
-        max_tokens: int = 1024,
-        seed: int = 42,
+        max_tokens: Optional[int] = None,
+        seed: Optional[int] = None,
         enable_thinking: bool = True,
         tools: Optional[List[Dict[str, Any]]] = None,
-        timeout: int = 45,
+        timeout: int = 60,
     ) -> Generator[Dict[str, Any], None, None]:
         """
-        Stream chunks from NVIDIA Nemotron 3.5 Bolt.
-        Yields:
-          {"type": "thinking", "chunk": str}
-          {"type": "content", "chunk": str}
-          {"type": "tool_call", "tool_call": dict}
-          {"type": "done", "total_thinking": str, "total_content": str}
+        Stream response tokens from NVIDIA endpoint.
         """
         api_key = self.get_api_key()
         if not api_key:
@@ -263,6 +341,12 @@ class NvidiaNemotronEngine:
             "Content-Type": "application/json"
         }
 
+        is_minimax = "minimax" in self.model
+        if max_tokens is None:
+            max_tokens = 16384 if is_minimax else 1024
+        if seed is None:
+            seed = 0 if is_minimax else 42
+
         payload: Dict[str, Any] = {
             "model": self.model,
             "messages": messages,
@@ -271,11 +355,11 @@ class NvidiaNemotronEngine:
             "max_tokens": max_tokens,
             "seed": seed,
             "stream": True,
-            "parallel_tool_calls": True,
-            "chat_template_kwargs": {
-                "enable_thinking": enable_thinking
-            }
         }
+        if not is_minimax:
+            payload["parallel_tool_calls"] = True
+            payload["chat_template_kwargs"] = {"enable_thinking": enable_thinking}
+
         if tools:
             payload["tools"] = tools
             payload["tool_choice"] = "auto"
@@ -313,19 +397,16 @@ class NvidiaNemotronEngine:
                     chunk_json = json.loads(raw_data)
                     delta = chunk_json.get("choices", [{}])[0].get("delta", {})
 
-                    # Thinking / reasoning delta
                     r_chunk = delta.get("reasoning_content")
                     if r_chunk:
                         total_thinking.append(r_chunk)
                         yield {"type": "thinking", "chunk": r_chunk}
 
-                    # Content delta
                     c_chunk = delta.get("content")
                     if c_chunk:
                         total_content.append(c_chunk)
                         yield {"type": "content", "chunk": c_chunk}
 
-                    # Tool calls delta
                     t_chunk = delta.get("tool_calls")
                     if t_chunk:
                         yield {"type": "tool_call", "delta": t_chunk}
@@ -346,42 +427,119 @@ class NvidiaNemotronEngine:
             }
 
     # ──────────────────────────────────────────────────────────────────────────
-    # Domain & Persona Agent Reasoning Synthesis
+    # Multimodal Vision Analysis (Screenshots, UI, Photos)
     # ──────────────────────────────────────────────────────────────────────────
 
-    def generate_agent_reasoning(
+    def analyze_multimodal(
         self,
-        agent_role: str,
-        task: str,
+        prompt: str,
+        image_source: str,
+        max_tokens: int = 4096
+    ) -> Dict[str, Any]:
+        """
+        Analyzes an image using MiniMax-M3.1-Flash multimodal vision.
+        image_source can be:
+          1. Web URL (http:// or https://)
+          2. Local file path (e.g., screenshots/desktop.png) -> encoded as data URI
+        """
+        image_url = image_source.strip()
+
+        # Handle local file paths by converting to base64 data URI
+        if not (image_url.startswith("http://") or image_url.startswith("https://") or image_url.startswith("data:")):
+            if os.path.exists(image_url):
+                ext = os.path.splitext(image_url)[1].lower().replace(".", "") or "png"
+                mime = "image/jpeg" if ext in ("jpg", "jpeg") else f"image/{ext}"
+                try:
+                    with open(image_url, "rb") as img_f:
+                        b64 = base64.b64encode(img_f.read()).decode("utf-8")
+                        image_url = f"data:{mime};base64,{b64}"
+                except Exception as e:
+                    return {"status": "error", "error": f"Failed to encode image file {image_source}: {e}"}
+            else:
+                return {"status": "error", "error": f"Image file not found: {image_source}"}
+
+        # Build multimodal payload matching MiniMax specification
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": image_url}}
+                ]
+            }
+        ]
+
+        # Use MiniMax-M3.1-Flash for multimodal tasks
+        saved_model = self.model
+        try:
+            self.model = MODEL_MINIMAX_FLASH
+            return self.chat_completion(messages=messages, max_tokens=max_tokens, seed=0)
+        finally:
+            self.model = saved_model
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # Domain Agentic Workflow Synthesis (Coding, Computer Use, Cybersecurity)
+    # ──────────────────────────────────────────────────────────────────────────
+
+    def generate_agentic_workflow(
+        self,
+        workflow_type: str,
+        directive: str,
         context: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Prompts Nemotron 3.5 Bolt with specialized agent persona instructions,
-        leveraging chain-of-thought to decompose and execute complex human directives.
+        Executes specialized Agentic Workflows using MiniMax-M3.1-Flash Mixture-of-Experts:
+          - 'coding': Production code synthesis, AST validation, pytest suites
+          - 'agentic_workflow': Multi-agent task decomposition, DAG planning
+          - 'computer_use': Desktop GUI interaction, browser automation, app control
+          - 'cybersecurity': Threat modeling, sandbox auditing, Ed25519 hash-chain receipts
         """
-        system_prompt = (
-            f"You are the specialized '{agent_role}' agent in CIEAV (Commit Layer for the Internet and Sovereign Workforce).\n"
-            "CIEAV is an autonomous operating system governed by Two-Phase Commit (2PC) safety floor, "
-            "taking pre-mutation snapshots, and recording Ed25519 hash-chain audit receipts with instant /undo.\n\n"
-            "Your objective: Deliver an exceptionally thorough, professional, actionable, and verified response.\n"
-            "Deconstruct the problem methodically, identify tradeoffs, and propose or synthesize concrete solutions.\n"
-            "Format your final response in clean, modern markdown with clear headings, bullets, and code blocks if applicable."
-        )
+        domain_prompts = {
+            "coding": (
+                "You are the Lead Software Architect & Codex Engineer in CIEAV.\n"
+                "Synthesize robust, production-grade, type-annotated code with 100% test coverage.\n"
+                "Validate against Two-Phase Commit principles and AST syntax rules."
+            ),
+            "agentic_workflow": (
+                "You are the Autonomous Workforce Coordinator in CIEAV.\n"
+                "Decompose complex goals into verifiable atomic steps with clear risk assessments and receipts.\n"
+                "Identify pre-conditions, tool assignments, and compensation rollback inverses."
+            ),
+            "computer_use": (
+                "You are the Sovereign Computer Use & Desktop Operator in CIEAV.\n"
+                "Formulate actionable UI automation actions (window focus, app launch, click coordinates, keystrokes).\n"
+                "Ensure failsafes and rollback boundaries are strictly enforced."
+            ),
+            "cybersecurity": (
+                "You are the Security Sentinel & Audit Guard in CIEAV.\n"
+                "Audit the directive for privilege escalations, unsafe file deletions, injection attacks, and cognitive fatigue.\n"
+                "Verify Ed25519 Merkle signatures and sandbox confinement."
+            )
+        }
 
-        user_content = f"Directive: {task}"
+        system_instruction = domain_prompts.get(workflow_type.lower(), domain_prompts["agentic_workflow"])
+
+        user_content = f"Directive: {directive}"
         if context:
-            user_content += f"\n\nContextual Background:\n{context}"
+            user_content += f"\n\nContext & Workspace State:\n{context}"
 
         messages = [
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": system_instruction},
             {"role": "user", "content": user_content}
         ]
 
-        res = self.chat_completion(messages=messages, enable_thinking=True, max_tokens=2048)
+        # Execute with MiniMax-M3.1-Flash MoE with 16k token capability
+        res = self.chat_completion(
+            messages=messages,
+            max_tokens=8192 if "minimax" in self.model else 2048,
+            temperature=1.0,
+            top_p=0.95
+        )
+
         if res.get("status") == "success":
             return {
                 "status": "success",
-                "agent": agent_role,
+                "workflow_type": workflow_type,
                 "model": self.model,
                 "content": res.get("content", ""),
                 "thinking": res.get("thinking", ""),
@@ -390,28 +548,71 @@ class NvidiaNemotronEngine:
             }
         return res
 
+    def generate_agent_reasoning(
+        self,
+        agent_role: str,
+        task: str,
+        context: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Persona reasoning for CIEAV squads (Researcher, Product, Codex, Sentinel).
+        Maps to MiniMax-M3.1-Flash or Nemotron.
+        """
+        role_lower = agent_role.lower()
+        if "coder" in role_lower or "engineer" in role_lower:
+            return self.generate_agentic_workflow("coding", task, context)
+        elif "sentinel" in role_lower or "security" in role_lower:
+            return self.generate_agentic_workflow("cybersecurity", task, context)
+        elif "gui" in role_lower or "computer" in role_lower:
+            return self.generate_agentic_workflow("computer_use", task, context)
+        else:
+            return self.generate_agentic_workflow("agentic_workflow", task, context)
+
     # ──────────────────────────────────────────────────────────────────────────
-    # Canonical Live Validation Test
+    # Live Validation Tests
     # ──────────────────────────────────────────────────────────────────────────
 
     def test_connection(self) -> Dict[str, Any]:
         """
-        Runs the canonical NVIDIA test prompt:
-        'Which number is larger, 9.11 or 9.8?'
-        Verifies model availability, latency, thinking tokens, and answer correctness.
+        Runs validation prompt against current active model:
+        - MiniMax-M3.1-Flash: Tests agentic workflow synthesis or multimodal prompt
+        - Nemotron: Tests canonical 9.11 vs 9.8 reasoning prompt
         """
-        messages = [
-            {"role": "user", "content": "Which number is larger, 9.11 or 9.8?"}
-        ]
-        return self.chat_completion(
-            messages=messages,
-            temperature=1.0,
-            top_p=0.95,
-            max_tokens=1024,
-            seed=42,
-            enable_thinking=True
-        )
+        if "minimax" in self.model:
+            # Canonical MiniMax multimodal / agentic test
+            messages = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "What is in this image?"},
+                        {"type": "image_url", "image_url": {"url": "https://assets.ngc.nvidia.com/products/api-catalog/phi-3-5-vision/example1b.jpg"}}
+                    ]
+                }
+            ]
+            return self.chat_completion(
+                messages=messages,
+                temperature=1.0,
+                top_p=0.95,
+                max_tokens=1024,
+                seed=0
+            )
+        else:
+            # Canonical Nemotron prompt
+            messages = [
+                {"role": "user", "content": "Which number is larger, 9.11 or 9.8?"}
+            ]
+            return self.chat_completion(
+                messages=messages,
+                temperature=1.0,
+                top_p=0.95,
+                max_tokens=1024,
+                seed=42,
+                enable_thinking=True
+            )
 
+
+# Alias class for backwards compatibility
+NvidiaNemotronEngine = NvidiaInferenceEngine
 
 # Global singleton instance
-nvidia_engine = NvidiaNemotronEngine()
+nvidia_engine = NvidiaInferenceEngine()
