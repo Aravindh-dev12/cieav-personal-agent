@@ -585,6 +585,67 @@ def process_user_input(text: str):
             print("\n" + res["message"] + "\n")
         return
 
+    # ── Work Dispatcher Intent (e.g. cieav work "Research three approaches") ──
+    if lower.startswith("work ") or lower == "work" or lower.startswith("/work "):
+        parts = cmd.split(" ", 1)
+        work_args = parts[1].strip() if len(parts) > 1 else ""
+        import argparse
+        import shlex
+        p = argparse.ArgumentParser(prog="cieav work")
+        p.add_argument("task", nargs="*", help="Task description")
+        p.add_argument("--agent", default=None)
+        p.add_argument("--squad", default=None)
+        p.add_argument("--no-open", dest="no_open", action="store_true")
+
+        try:
+            tokens = shlex.split(work_args)
+            parsed = p.parse_args(tokens)
+            task_str = " ".join(parsed.task).strip()
+            if not task_str:
+                task_str = "Summarize current project status and active squads"
+            from commit_layer.work_dispatcher import work_dispatcher
+            res = work_dispatcher.dispatch(
+                task=task_str,
+                agent=parsed.agent,
+                squad=parsed.squad,
+                auto_open=not parsed.no_open
+            )
+            print(res["card"])
+            if res.get("receipt_id"):
+                last_committed_receipt_id = res["receipt_id"]
+        except Exception:
+            from commit_layer.work_dispatcher import work_dispatcher
+            res = work_dispatcher.dispatch(task=work_args or "Task status", auto_open=True)
+            print(res["card"])
+            if res.get("receipt_id"):
+                last_committed_receipt_id = res["receipt_id"]
+        return
+
+    # ── Personal Agent Dashboard & Setup (e.g. cieav personal-agent setup/dashboard/status)
+    if lower.startswith("personal-agent") or lower.startswith("/personal-agent") or lower in ("dashboard", "/dashboard"):
+        parts = lower.split()
+        subaction = parts[1] if len(parts) > 1 and parts[0] in ("personal-agent", "/personal-agent") else "dashboard"
+        from commit_layer.personal_agent_dashboard import dashboard_server, load_settings, save_settings
+        if subaction == "setup":
+            st = load_settings()
+            save_settings(st)
+            print("\n\033[1;32m[CIEAV PERSONAL AGENT] Workspace setup complete! Configured for local CPU Qwen GGUF on port 6796.\033[0m\n")
+            print("  • Dashboard URL: \033[1;36mhttp://127.0.0.1:6796\033[0m")
+            print("  • Start working: \033[1;37mcieav work \"your task\"\033[0m\n")
+        elif subaction in ("dashboard", "start", "open"):
+            res = dashboard_server.spawn_daemon_process(auto_open=True)
+            print(f"\n\033[1;32m[CIEAV PERSONAL AGENT]\033[0m {res['message']}\n")
+        elif subaction == "status":
+            st = dashboard_server.get_status()
+            alive_col = "\033[1;32mONLINE\033[0m" if st["is_running"] else "\033[1;33mSTANDBY (Run 'cieav personal-agent dashboard')\033[0m"
+            print(f"\n[CIEAV PERSONAL AGENT STATUS]")
+            print(f"  • Dashboard Service : {alive_col}")
+            print(f"  • URL               : {st['url']}")
+            print(f"  • Model Provider    : {st['model_provider']} ({st['model_name']})")
+            print(f"  • Active Threads    : {st['active_threads_count']}")
+            print(f"  • Spend Cap         : ${st['spend_cap_usd']:.2f} USD\n")
+        return
+
     # Fast-Path: Instant Sovereign Operator Identity & Technical Knowledge Engine (0ms CPU)
     user_id_res = user_identity_resolver.check_user_identity_intent(cmd)
     if user_id_res:

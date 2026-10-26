@@ -246,6 +246,17 @@ def main():
     p_daemon = subparsers.add_parser("daemon", help="Workforce Sentinel background watcher daemon")
     p_daemon.add_argument("action", nargs="?", default="status", choices=["start", "stop", "status"], help="Daemon control")
 
+    # work command
+    p_work = subparsers.add_parser("work", help="Assign a task to personal agent or squad")
+    p_work.add_argument("task", help="Natural language directive or task")
+    p_work.add_argument("--agent", default=None, help="Assigned agent persona (e.g. Researcher, Codex, Sentinel)")
+    p_work.add_argument("--squad", default=None, help="Assigned squad (e.g. Product Team, Engineering Squad)")
+    p_work.add_argument("--no-open", dest="no_open", action="store_true", help="Do not launch browser dashboard automatically")
+
+    # personal-agent command
+    p_pa = subparsers.add_parser("personal-agent", help="Personal agent workspace and dashboard commands")
+    p_pa.add_argument("subaction", choices=["setup", "dashboard", "status"], help="Action to execute")
+
     args = parser.parse_args()
 
     if args.command == "morning":
@@ -283,6 +294,35 @@ def main():
             res = autonomous_workforce.daemon.status()
             st_col = "ACTIVE" if res["is_running"] else "STOPPED"
             print(f"\n[CIEAV WORKFORCE DAEMON] Status: {st_col} | Watched: {res['watched_files_count']} files\n")
+    elif args.command == "work":
+        from commit_layer.work_dispatcher import work_dispatcher
+        res = work_dispatcher.dispatch(
+            task=args.task,
+            agent=args.agent,
+            squad=args.squad,
+            auto_open=not getattr(args, "no_open", False)
+        )
+        print(res["card"])
+    elif args.command == "personal-agent":
+        from commit_layer.personal_agent_dashboard import dashboard_server, load_settings, save_settings
+        if args.subaction == "setup":
+            st = load_settings()
+            save_settings(st)
+            print("\n[CIEAV PERSONAL AGENT] Workspace setup complete! Configured for local CPU Qwen GGUF on port 6796.\n")
+            print("  • Dashboard URL: http://127.0.0.1:6796")
+            print("  • Start working: cieav work \"your task\"\n")
+        elif args.subaction == "dashboard":
+            res = dashboard_server.spawn_daemon_process(auto_open=True)
+            print(f"\n[CIEAV PERSONAL AGENT] {res['message']}\n")
+        elif args.subaction == "status":
+            st = dashboard_server.get_status()
+            alive_col = "\033[1;32mONLINE\033[0m" if st["is_running"] else "\033[1;33mSTANDBY (Run 'cieav personal-agent dashboard')\033[0m"
+            print(f"\n[CIEAV PERSONAL AGENT STATUS]")
+            print(f"  • Dashboard Service : {alive_col}")
+            print(f"  • URL               : {st['url']}")
+            print(f"  • Model Provider    : {st['model_provider']} ({st['model_name']})")
+            print(f"  • Active Threads    : {st['active_threads_count']}")
+            print(f"  • Spend Cap         : ${st['spend_cap_usd']:.2f} USD\n")
     else:
         repl()
 

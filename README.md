@@ -477,6 +477,17 @@ CIEAV is equipped with a complete, sovereign **Personal Agentic Workforce** runn
 
 ### Terminal & Natural Language Commands
 ```bash
+# Personal-Agent Web Dashboard (Dots Edition) & Work Dispatcher
+cieav personal-agent setup          # Initialize local workspace & local model config
+cieav personal-agent dashboard      # Launch persistent web workspace on http://127.0.0.1:6796
+cieav personal-agent status         # Check background server, threads, and spend cap
+
+# Give the Agent Work from the CLI
+cieav work "Research three approaches and recommend one"
+cieav work --agent "Researcher" "Compare these documents"
+cieav work --squad "Product Team" "Review this plan"
+cieav work --no-open "Summarize current project status"
+
 # Codebase Health Inspection & Audit
 cieav "autonomously check and update files"
 cieav workforce

@@ -16,7 +16,7 @@ def evaluate(action: Action) -> tuple[RiskLevel, list[str]]:
         return RiskLevel.LOW, ["Read-only expense tracking & order history inspection (strictly non-mutating)"]
 
     # ── Autonomous Workforce & Codebase Architecture ───────────
-    if tool in ('autonomous_file_scan', 'workforce_daemon_ctl'):
+    if tool in ('autonomous_file_scan', 'workforce_daemon_ctl', 'personal_agent_work'):
         return RiskLevel.LOW, ["Autonomous workforce inspection & background daemon control (non-destructive)"]
 
     if tool == 'autonomous_file_update':
