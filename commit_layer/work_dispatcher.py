@@ -175,6 +175,12 @@ class WorkDispatcher:
         # ── Local deterministic / sovereign fallback ─────────────────────────
         lower = task.lower()
 
+        # Persona: Cindy Independent Reviewer (/review & Finding Protocol)
+        if any(k in assigned.lower() for k in ("review", "reviewer", "cindy")):
+            from commit_layer.cindy_layer import cindy_reviewer
+            report = cindy_reviewer.review_workspace(target_path=".")
+            return cindy_reviewer.render_review_card(report)
+
         # Persona: Researcher / Research Squad
         if "research" in assigned.lower() or "research" in lower:
             return (

@@ -542,6 +542,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
     <div class="status-pills">
       <div class="pill pill-green">● 2PC SAFETY ACTIVE</div>
       <div class="pill pill-purple">PORT 6796</div>
+      <div class="pill pill-cyan" onclick="runCindyReview()" style="cursor:pointer;" title="Run Cindy Independent Reviewer with P0-P3 Findings">🔍 /REVIEW</div>
       <div class="pill pill-amber" id="nvidia-pill" onclick="openNvidiaModal()" style="cursor:pointer;" title="Click to configure NVIDIA Nemotron 3.5 Bolt (Free API)">⚡ NVIDIA NEMOTRON</div>
       <div class="pill pill-cyan" id="model-pill">LOCAL QWEN-3.5-9B</div>
     </div>
@@ -734,6 +735,45 @@ DASHBOARD_HTML = """<!DOCTYPE html>
         }
       } catch (e) {
         console.error("Status check failed", e);
+      }
+    }
+
+    async function runCindyReview() {
+      const taskInput = document.getElementById("task-input");
+      if (taskInput) taskInput.value = "Review workspace under Cindy Finding Protocol (/review)";
+      try {
+        const res = await fetch("/api/review");
+        const rep = await res.json();
+        const msgContainer = document.getElementById("messages-container");
+        if (msgContainer) {
+          const passCol = rep.passed ? "#10b981" : "#f43f5e";
+          let html = `<div class="message assistant" style="border-left: 3px solid ${passCol};">
+            <div class="msg-header">
+              <span class="msg-agent">🔍 Cindy Independent Reviewer</span>
+              <span class="msg-time">${rep.report_id} • ${rep.elapsed_sec}s</span>
+            </div>
+            <div style="font-weight:600; margin-bottom:0.5rem; color:${passCol};">
+              ${rep.passed ? "✅ AUDIT PASSED" : "⚠️ ACTION REQUIRED"} — ${rep.counts.P0} P0, ${rep.counts.P1} P1, ${rep.counts.P2} P2, ${rep.counts.P3} P3
+            </div>
+            <div style="font-size:0.75rem; color:#cbd5e1; margin-bottom:0.5rem;">${rep.summary}</div>`;
+          if (rep.findings && rep.findings.length > 0) {
+            html += `<div style="display:flex; flex-direction:column; gap:0.4rem;">`;
+            rep.findings.slice(0, 5).forEach(f => {
+              const bCol = f.severity === "P0" || f.severity === "P1" ? "#f43f5e" : "#f59e0b";
+              html += `<div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:0.4rem 0.6rem; font-size:0.72rem;">
+                <span style="background:${bCol}25; color:${bCol}; font-weight:700; padding:1px 4px; border-radius:3px;">${f.severity}</span>
+                <span style="font-family:monospace; color:#38bdf8; margin-left:4px;">${f.file} (${f.line_range})</span>
+                <div style="color:#e2e8f0; margin-top:2px;">${f.evidence}</div>
+                <div style="color:#10b981; margin-top:2px;">💡 ${f.recommendation}</div>
+              </div>`;
+            });
+            html += `</div>`;
+          }
+          html += `</div>`;
+          msgContainer.innerHTML = html + msgContainer.innerHTML;
+        }
+      } catch (e) {
+        alert("Review failed: " + e.message);
       }
     }
 
@@ -1062,6 +1102,11 @@ class PersonalAgentHandler(BaseHTTPRequestHandler):
             from commit_layer.nvidia_engine import nvidia_engine
             return self._send_json(200, nvidia_engine.get_status())
 
+        if path == "/api/review":
+            from commit_layer.cindy_layer import cindy_reviewer
+            report = cindy_reviewer.review_workspace(target_path=".")
+            return self._send_json(200, report.to_dict())
+
         if path == "/api/threads":
             return self._send_json(200, list_threads())
 
@@ -1100,6 +1145,12 @@ class PersonalAgentHandler(BaseHTTPRequestHandler):
             req_data = json.loads(body)
         except Exception:
             req_data = {}
+
+        if path == "/api/orca":
+            from commit_layer.cindy_layer import orca_orchestrator
+            directive = req_data.get("directive", "Audit and execute workspace task")
+            res = orca_orchestrator.execute_team_mission(directive=directive)
+            return self._send_json(200, res)
 
         if path == "/api/work":
             from commit_layer.work_dispatcher import work_dispatcher

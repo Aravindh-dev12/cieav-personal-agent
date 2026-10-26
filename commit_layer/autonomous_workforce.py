@@ -64,7 +64,7 @@ class CodebaseSentinel:
         ".git", ".repo_snapshots", "__pycache__", "node_modules", "dist",
         "build", ".venv", "venv", "env", ".idea", ".vscode", "briefings",
         "browser_sessions", "sandboxes", "screenshots", "distribution",
-        "evals", ".pytest_cache", "personal_outbox"
+        "evals", ".pytest_cache", "personal_outbox", "cindy_repo", "third_party", "vendor"
     }
 
     EXCLUDED_EXTENSIONS = {

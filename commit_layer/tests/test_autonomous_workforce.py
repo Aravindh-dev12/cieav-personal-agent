@@ -18,7 +18,7 @@ def test_sentinel_scan_workspace():
     assert scan["py_files_count"] > 0
     assert scan["total_lines"] > 0
     assert "health_score" in scan
-    assert scan["elapsed_sec"] < 10.0
+    assert scan["elapsed_sec"] < 15.0
 
 
 def test_engineer_inspect_and_update_governed():

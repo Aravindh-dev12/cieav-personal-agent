@@ -263,6 +263,15 @@ def main():
     p_nvidia.add_argument("val", nargs="?", default="", help="Value: API key, model alias, or image path/URL")
     p_nvidia.add_argument("extra", nargs="?", default="", help="Additional prompt or parameters (e.g. for vision)")
 
+    # review command (Cindy Independent Reviewer Protocol)
+    p_review = subparsers.add_parser("review", help="Cindy Independent Reviewer with P0-P3 finding protocol")
+    p_review.add_argument("target", nargs="?", default=".", help="Target directory or file to audit")
+    p_review.add_argument("--baseline", default="HEAD", help="Git baseline comparison")
+
+    # orca command (Cindy Orca Multi-Agent Teaming)
+    p_orca = subparsers.add_parser("orca", help="Cindy Orca multi-agent lead/worker team mission")
+    p_orca.add_argument("directive", help="Mission directive for the Orca team")
+
     args = parser.parse_args()
 
     if args.command == "morning":
@@ -384,6 +393,24 @@ def main():
                 print(f"  • Response        :\n{res.get('content')}\n")
             else:
                 print(f"  • Status          : FAILED - {res.get('error')}\n")
+    elif args.command == "review":
+        from commit_layer.cindy_layer import cindy_reviewer
+        report = cindy_reviewer.review_workspace(target_path=args.target, baseline=args.baseline)
+        print(cindy_reviewer.render_review_card(report))
+    elif args.command == "orca":
+        from commit_layer.cindy_layer import orca_orchestrator
+        def progress(cur, tot, msg):
+            print(f"  [1;36m[{cur}/{tot}][0m ▶ {msg}...")
+        res = orca_orchestrator.execute_team_mission(directive=args.directive, stream_cb=progress)
+        print(f"\n\033[1;35m[ORCA MULTI-AGENT TEAM MISSION COMPLETED]\033[0m")
+        print(f"  • Team ID      : {res['team_id']}")
+        print(f"  • Directive    : {res['directive']}")
+        print(f"  • Lead Model   : {res['lead_model']}")
+        print(f"  • 2PC Receipt  : \033[1;33m{res['receipt_id']}\033[0m")
+        print(f"  • Execution    : {res['elapsed_sec']}s")
+        for w in res.get("workers", []):
+            print(f"    - Worker [{w['label']} - {w['role']}]: {w['status']}")
+        print()
     else:
         repl()
 

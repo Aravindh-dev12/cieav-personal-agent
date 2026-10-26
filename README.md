@@ -490,6 +490,11 @@ cieav nvidia vision <img_url_path>  # Multimodal analysis for computer use & des
 cieav nvidia status                 # View model capabilities, token limits, and status
 cieav nvidia test                   # Run live validation test
 
+# Cindy Architecture: Orca Teaming, Review Protocol & Parity
+cieav review [target]               # Run independent Reviewer with P0-P3 Finding protocol
+cieav orca "Build rate limiter"     # Execute Orca multi-agent Lead & parallel Workers mission
+cieav work "Review code" --agent "Reviewer" # Assign task to Cindy Reviewer persona
+
 # Give the Agent Work from the CLI
 cieav work "Research three approaches and recommend one"
 cieav work --agent "Researcher" "Compare these documents"
@@ -522,6 +527,7 @@ cieav "open notepad"
 ```text
 Cieav-the-Commit-Layer-for-the-Internet/
 ├── commit_layer/
+│   ├── cindy_layer.py           # Cindy Reviewer (P0-P3 Findings), Orca Teaming & Parity tools
 │   ├── nvidia_engine.py         # MiniMax-M3.1-Flash (MoE Agentic Workflows, 16k context, Vision) & Nemotron
 │   ├── hybrid_brain.py          # Native Qwen-3.5-9B GGUF local engine & Hugging Face auto-downloader
 │   ├── multi_agent_swarm.py     # 5-agent autonomous swarm runtime (Atlas, Codex, Crust, Ops, CFO)

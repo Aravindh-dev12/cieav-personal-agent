@@ -649,6 +649,33 @@ def process_user_input(text: str):
             print(f"  • Spend Cap         : ${st['spend_cap_usd']:.2f} USD\n")
         return
 
+    # ── Cindy Independent Reviewer (/review & Finding Protocol)
+    if lower.startswith("review") or lower.startswith("/review"):
+        parts = cmd.strip().split()
+        target_path = parts[1] if len(parts) > 1 else "."
+        from commit_layer.cindy_layer import cindy_reviewer
+        report = cindy_reviewer.review_workspace(target_path=target_path)
+        print(cindy_reviewer.render_review_card(report))
+        return
+
+    # ── Cindy Orca Multi-Agent Teaming (Lead & Parallel Workers)
+    if lower.startswith("orca ") or lower.startswith("/orca "):
+        directive = cmd.split(" ", 1)[1].strip()
+        from commit_layer.cindy_layer import orca_orchestrator
+        def progress(cur, tot, msg):
+            print(f"  \033[1;36m[{cur}/{tot}]\033[0m ▶ {msg}...")
+        res = orca_orchestrator.execute_team_mission(directive=directive, stream_cb=progress)
+        print(f"\n\033[1;35m[ORCA MULTI-AGENT TEAM MISSION COMPLETED]\033[0m")
+        print(f"  • Team ID      : {res['team_id']}")
+        print(f"  • Directive    : {res['directive']}")
+        print(f"  • Lead Model   : {res['lead_model']}")
+        print(f"  • 2PC Receipt  : \033[1;33m{res['receipt_id']}\033[0m")
+        print(f"  • Execution    : {res['elapsed_sec']}s")
+        for w in res.get("workers", []):
+            print(f"    - Worker [{w['label']} - {w['role']}]: {w['status']}")
+        print()
+        return
+
     # ── NVIDIA Cloud Inference Engine (MiniMax-M3.1-Flash MoE & Nemotron-3.5-Bolt)
     if lower.startswith("nvidia") or lower.startswith("/nvidia"):
         parts = cmd.strip().split()
