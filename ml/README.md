@@ -43,7 +43,7 @@ Models interpret; CIEAV deterministic code authorizes. No trained model, reward 
 
 ## Frameworks
 
-Prototype/single-node training uses Python with PyTorch + Transformers + TRL + PEFT. Scale-out RL uses verl with Ray and vLLM/SGLang rollouts. These frameworks optimize models only; canonical reward and hard-safety semantics live in `packages/core/src/ml-*.ts` and are consumed through the authenticated Node verifier boundary rather than reimplemented as an independent Python authority.
+Prototype/single-node training uses Python with PyTorch + Transformers + TRL + PEFT, alongside **Unsloth** (`ml/train_unsloth.py`) for ultra-fast, memory-efficient GRPO / RLVR and DPO post-training on Qwen-3.5 with custom Triton kernels and direct GGUF export. Scale-out RL uses verl with Ray and vLLM/SGLang rollouts. These frameworks optimize models only; canonical reward and hard-safety semantics live in `packages/core/src/ml-*.ts` and are consumed through the authenticated Node verifier boundary rather than reimplemented as an independent Python authority.
 
 ## Data flow
 
