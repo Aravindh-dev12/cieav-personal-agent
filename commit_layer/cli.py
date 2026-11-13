@@ -272,6 +272,13 @@ def main():
     p_orca = subparsers.add_parser("orca", help="Cindy Orca multi-agent lead/worker team mission")
     p_orca.add_argument("directive", help="Mission directive for the Orca team")
 
+    # model command (Universal Model Gateway & Connectors)
+    p_model = subparsers.add_parser("model", help="Universal Model Gateway (Zero-download CPU, Cloud, and Agent connectors)")
+    p_model.add_argument("action", nargs="?", default="status", choices=["status", "list", "set", "test"], help="Action: status, list, set, or test")
+    p_model.add_argument("provider", nargs="?", default="", help="Provider: zero_download, nvidia, openai, anthropic, meta_open, local_gguf")
+    p_model.add_argument("model_name", nargs="?", default="", help="Optional model name")
+    p_model.add_argument("--key", default="", help="Optional API key")
+
     args = parser.parse_args()
 
     if args.command == "morning":
@@ -411,6 +418,37 @@ def main():
         for w in res.get("workers", []):
             print(f"    - Worker [{w['label']} - {w['role']}]: {w['status']}")
         print()
+    elif args.command == "model":
+        from commit_layer.model_gateway import model_gateway
+        if args.action in ("status", "list"):
+            st = model_gateway.get_status()
+            print(f"\n\033[1;36m============================================================\033[0m")
+            print(f"  \033[1;37mCIEAV UNIVERSAL MODEL GATEWAY & AGENT CONNECTORS\033[0m")
+            print(f"\033[1;36m============================================================\033[0m")
+            print(f"  Active Provider : \033[1;32m{st['active_provider']}\033[0m ({st['active_model']})")
+            print(f"------------------------------------------------------------")
+            for pid, p in st['providers'].items():
+                active_marker = "* (ACTIVE)" if pid == st['active_provider'] else " "
+                free_tag = "[FREE / 0 MB]" if p['free'] else "[PAID API]"
+                print(f"  {active_marker} \033[1;33m{pid:<15}\033[0m {free_tag:<12} {p['name']}")
+                print(f"    {p['desc']}")
+            print(f"------------------------------------------------------------")
+            print(f"  To switch: cieav model set <provider> [model] [--key <API_KEY>]")
+            print(f"  Zero-download mode: cieav model set zero_download\n")
+        elif args.action == "set":
+            if not args.provider:
+                print("Usage: cieav model set <provider> [model] [--key <API_KEY>]")
+                print("Providers: zero_download, nvidia, openai, anthropic, meta_open, local_gguf")
+            else:
+                res = model_gateway.set_provider(args.provider, model=args.model_name or None, api_key=args.key or None)
+                print(f"\n[MODEL GATEWAY] Provider switched to: \033[1;32m{res['provider']}\033[0m (Model: {res['model']})\n")
+        elif args.action == "test":
+            print(f"\nTesting query dispatch with active provider: {model_gateway.settings['active_provider']}...")
+            res = model_gateway.query("Briefly summarize the Two-Phase Commit safety guarantee.")
+            print(f"Provider: {res.get('provider')}")
+            print(f"Model   : {res.get('model')}")
+            resp_txt = res.get('content', '')[:300]
+            print(f"Response: {resp_txt}...\n")
     else:
         repl()
 

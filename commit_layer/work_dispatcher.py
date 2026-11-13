@@ -151,7 +151,7 @@ class WorkDispatcher:
 
     def _generate_response(self, task: str, assigned: str) -> str:
         """Domain-specialized synthesis for the designated worker or squad."""
-        # ── Fast path: NVIDIA Nemotron 3.5 Bolt (Free API + CoT Thinking) ─────
+        # ── Fast path 1: NVIDIA Engine (Nemotron CoT & MiniMax MoE) ───────────
         if nvidia_engine.is_available():
             try:
                 res = nvidia_engine.generate_agent_reasoning(agent_role=assigned, task=task)
@@ -170,7 +170,16 @@ class WorkDispatcher:
                         )
                     return text_content
             except Exception as e:
-                logger.warning(f"Nemotron inference failed, falling back to local CPU: {e}")
+                logger.warning(f"Nemotron inference failed, falling back: {e}")
+
+        # ── Fast path 2: Universal Model Gateway (OpenAI, Claude, Meta, Zero-Download) ──
+        try:
+            from commit_layer.model_gateway import model_gateway
+            mg_res = model_gateway.query(prompt=task, agent_role=assigned)
+            if mg_res.get("content") and mg_res.get("provider") != "zero_download":
+                return mg_res["content"].strip()
+        except Exception as e:
+            logger.warning(f"Model gateway inference fallback: {e}")
 
         # ── Local deterministic / sovereign fallback ─────────────────────────
         lower = task.lower()
