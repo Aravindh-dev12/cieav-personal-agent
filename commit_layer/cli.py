@@ -279,6 +279,10 @@ def main():
     p_model.add_argument("model_name", nargs="?", default="", help="Optional model name")
     p_model.add_argument("--key", default="", help="Optional API key")
 
+    # ask command (Meeting Defense & Technical Knowledge Base Q&A)
+    p_ask = subparsers.add_parser("ask", help="Query the CIEAV Meeting Defense & Technical Knowledge Base")
+    p_ask.add_argument("question", help="Question or topic to query (e.g. 'how does 2pc work', 'reward hacking')")
+
     args = parser.parse_args()
 
     if args.command == "morning":
@@ -449,6 +453,10 @@ def main():
             print(f"Model   : {res.get('model')}")
             resp_txt = res.get('content', '')[:300]
             print(f"Response: {resp_txt}...\n")
+    elif args.command == "ask":
+        from commit_layer.ask import cieav_qa
+        res = cieav_qa.answer(args.question)
+        print("\n" + res["formatted_card"] + "\n")
     else:
         repl()
 
