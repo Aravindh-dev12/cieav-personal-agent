@@ -14,6 +14,13 @@
 # CIEAV: Sovereign Open-Source Personal AI Agent
 > **Autonomous Local-First Personal Agent with Reversible Execution & Guaranteed Lossless Rollback**
 
+[![Hugging Face Space](https://img.shields.io/badge/Hugging%20Face-Live%20Space-magenta?logo=huggingface&logoColor=white)](https://huggingface.co/spaces/Aravindhan11/Cieav-Agent)
+[![Hugging Face Model](https://img.shields.io/badge/Hugging%20Face-Cieav--Model%20(82.3MB)-yellow?logo=huggingface&logoColor=white)](https://huggingface.co/Aravindhan11/Cieav-model)
+[![PyBot Symbolic Engine](https://img.shields.io/badge/Engine-PyBot%20Symbolic%20(0%20MB)-orange?logo=python&logoColor=white)](https://github.com/huggingface/pybot)
+[![Safety Floor](https://img.shields.io/badge/Safety-Two--Phase%20Commit-green?logo=git&logoColor=white)](https://github.com/Aravindh-dev12/cieav-personal-agent)
+[![Tests Passing](https://img.shields.io/badge/Tests-44%20Passing-brightgreen)](https://github.com/Aravindh-dev12/cieav-personal-agent)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 ⚡ **Instant Launch**: Clone and double-click **`Start-CIEAV.bat`** (or run `cieav` in PowerShell) to start the autonomous agent runtime!
 
 🎮 **Live Interactive Hugging Face Space**: **[https://huggingface.co/spaces/Aravindhan11/Cieav-Agent](https://huggingface.co/spaces/Aravindhan11/Cieav-Agent)** *(Test PyBot Pure-Python reasoning, Two-Phase Commit safety floor, and live `/undo` rollbacks directly in your browser!)*  
@@ -357,6 +364,34 @@ python test_real_world_cieav_live.py
 4. **CFO Financial Caps**: Real-time spending limits ($100 max) and in-memory card PII redaction.
 5. **Ed25519 Merkle Hash-Chain**: Verifies canonical SQLite cryptographic signatures from Genesis to tip.
 6. **Windows Recycle Bin Subsystem**: Win32 `SHQueryRecycleBinW` live file inspection and `SHEmptyRecycleBinW` purge prevention.
+
+---
+
+### 🌐 Live Hugging Face Space & PyBot Architecture
+
+CIEAV is live on Hugging Face Spaces with an interactive web demonstration:
+
+* **Live Hugging Face Space**: **[https://huggingface.co/spaces/Aravindhan11/Cieav-Agent](https://huggingface.co/spaces/Aravindhan11/Cieav-Agent)** *(Status: **RUNNING**)*
+* **Hugging Face Research Model**: **[https://huggingface.co/Aravindhan11/Cieav-model](https://huggingface.co/Aravindhan11/Cieav-model)** *(82.3MB SafeTensors LoRA)*
+* **Space Source Code in Repository**: [`huggingface_space/`](huggingface_space/)
+
+#### What You Can Test in the Live Hugging Face Space:
+1. **PyBot Pure-Python Symbolic Engine** (inspired by [`huggingface/pybot`](https://github.com/huggingface/pybot)):
+   - Operates with **0 MB weight download**, sub-2ms latency, and pure standard library Python.
+   - Shows live module tracing: Understanding (intent & AST), Memory (session state), Knowledge (invariants), and Compose (2PC proposal).
+2. **Two-Phase Commit (2PC) Lifecycle**:
+   - Visual animation of Phase 1 (PREPARE), 60-second single-use Ephemeral Permit issuance, and Phase 2 (COMMIT).
+3. **One-Click Attack Testing Ground**:
+   - Test adversarial prompt injections (`rm -rf / --no-preserve`), credential exfiltration (`cat .env`), and apologetic sycophancy (reward hacking).
+4. **Interactive Lossless `/undo`**:
+   - Hit `/undo` to experience real-time state restoration with zero data loss.
+5. **Ed25519 Cryptographic Audit Ledger**:
+   - Inspect live hash-chained audit receipts in real-time.
+
+```bash
+# Run the Hugging Face Space app locally:
+python huggingface_space/app.py
+```
 
 ---
 
