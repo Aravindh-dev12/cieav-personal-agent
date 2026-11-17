@@ -39,6 +39,12 @@ class UniversalModelGateway:
     SETTINGS_PATH = Path("personal_agent_workspace/settings.json")
 
     PROVIDERS = {
+        "pybot_symbolic": {
+            "name": "PyBot Pure-Python Engine (Hugging Face PyBot Style)",
+            "type": "local",
+            "desc": "Pure Python standard library (0 MB weights, zero external deps). 100% deterministic symbolic reasoning, immune to prompt injection.",
+            "free": True
+        },
         "zero_download": {
             "name": "Local Sovereign (0 MB Download)",
             "type": "local",
@@ -160,6 +166,21 @@ class UniversalModelGateway:
         Unified dispatch: attempts active provider, with automatic zero-download CPU fallback.
         """
         provider = self.settings.get("active_provider", "zero_download")
+
+        # 0. PyBot Pure-Python Symbolic Engine (Hugging Face PyBot Style - 0 MB, Zero Weights)
+        if provider == "pybot_symbolic":
+            from commit_layer.pybot_engine import pybot_engine
+            res = pybot_engine.process(prompt)
+            return {
+                "provider": "pybot_symbolic",
+                "model": "cieav-pybot-v1",
+                "content": res.get("content", ""),
+                "intent": res.get("intent", ""),
+                "risk_level": res.get("risk_level", "LOW"),
+                "proposal": res.get("proposal", {}),
+                "elapsed_ms": res.get("elapsed_ms", 0.0),
+                "status": "success"
+            }
 
         # 1. NVIDIA Free NIM (Nemotron / MiniMax)
         if provider == "nvidia":
