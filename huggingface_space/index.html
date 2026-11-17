@@ -137,22 +137,22 @@ const INK = "#000000", PAPER = "#ffffff", OFF = "#f4f4f4", FAINT = "#d6d6d6", US
 
 const EXAMPLES = [
   "What is CIEAV Personal Agent?",
+  "current PM in india",
   "write a code in python star pattern",
-  "what is capital of china",
-  "How does Two-Phase Commit work?",
+  "capital of india",
   "Create server.py & test /undo",
   "Test prompt injection (rm -rf /)"
 ];
 
 const CAPITALS = {
-  "china": "Beijing",
   "india": "New Delhi",
+  "china": "Beijing",
+  "france": "Paris",
   "united states": "Washington, D.C.",
   "usa": "Washington, D.C.",
   "us": "Washington, D.C.",
   "united kingdom": "London",
   "uk": "London",
-  "france": "Paris",
   "germany": "Berlin",
   "japan": "Tokyo",
   "russia": "Moscow",
@@ -180,7 +180,6 @@ const CAPITALS = {
   "bangladesh": "Dhaka",
   "sri lanka": "Sri Jayawardenepura Kotte / Colombo",
   "uae": "Abu Dhabi",
-  "united arab emirates": "Abu Dhabi",
   "thailand": "Bangkok",
   "vietnam": "Hanoi",
   "malaysia": "Kuala Lumpur",
@@ -193,6 +192,112 @@ const CAPITALS = {
   "poland": "Warsaw",
   "denmark": "Copenhagen",
   "finland": "Helsinki"
+};
+
+const LEADERS = {
+  "india": {
+    "pm": "Narendra Modi (in office since 26 May 2014)",
+    "president": "Droupadi Murmu (15th President of India)",
+    "general": "Prime Minister: Narendra Modi • President: Droupadi Murmu"
+  },
+  "united states": {
+    "president": "Joe Biden (46th President) / Donald Trump (47th President-elect)",
+    "pm": "The United States is a presidential republic and does not have a Prime Minister; executive power is vested in the President",
+    "general": "President: Joe Biden / Donald Trump • Vice President: Kamala Harris / JD Vance"
+  },
+  "usa": {
+    "president": "Joe Biden (46th President) / Donald Trump (47th President-elect)",
+    "pm": "The United States is a presidential republic and does not have a Prime Minister; executive power is vested in the President",
+    "general": "President: Joe Biden / Donald Trump • Vice President: Kamala Harris / JD Vance"
+  },
+  "us": {
+    "president": "Joe Biden (46th President) / Donald Trump (47th President-elect)",
+    "pm": "The United States does not have a Prime Minister; the head of government is the President",
+    "general": "President: Joe Biden / Donald Trump"
+  },
+  "united kingdom": {
+    "pm": "Keir Starmer (Labour Party, Prime Minister since July 2024)",
+    "monarch": "King Charles III",
+    "general": "Prime Minister: Keir Starmer • Head of State: King Charles III"
+  },
+  "uk": {
+    "pm": "Keir Starmer (Labour Party, Prime Minister since July 2024)",
+    "monarch": "King Charles III",
+    "general": "Prime Minister: Keir Starmer • Head of State: King Charles III"
+  },
+  "france": {
+    "president": "Emmanuel Macron",
+    "pm": "Michel Barnier",
+    "general": "President: Emmanuel Macron • Prime Minister: Michel Barnier"
+  },
+  "china": {
+    "president": "Xi Jinping (President of the PRC & General Secretary of the CCP)",
+    "pm": "Li Qiang (Premier of the State Council)",
+    "general": "President: Xi Jinping • Premier: Li Qiang"
+  },
+  "russia": {
+    "president": "Vladimir Putin",
+    "pm": "Mikhail Mishustin",
+    "general": "President: Vladimir Putin • Prime Minister: Mikhail Mishustin"
+  },
+  "japan": {
+    "pm": "Shigeru Ishiba (Prime Minister since October 2024)",
+    "emperor": "Emperor Naruhito",
+    "general": "Prime Minister: Shigeru Ishiba • Emperor: Naruhito"
+  },
+  "germany": {
+    "chancellor": "Olaf Scholz (Federal Chancellor)",
+    "pm": "Olaf Scholz (Federal Chancellor)",
+    "president": "Frank-Walter Steinmeier",
+    "general": "Chancellor: Olaf Scholz • President: Frank-Walter Steinmeier"
+  },
+  "canada": {
+    "pm": "Justin Trudeau (Prime Minister since 2015)",
+    "general": "Prime Minister: Justin Trudeau"
+  },
+  "australia": {
+    "pm": "Anthony Albanese (Prime Minister since 2022)",
+    "general": "Prime Minister: Anthony Albanese"
+  },
+  "italy": {
+    "pm": "Giorgia Meloni (President of the Council of Ministers)",
+    "president": "Sergio Mattarella",
+    "general": "Prime Minister: Giorgia Meloni • President: Sergio Mattarella"
+  },
+  "israel": {
+    "pm": "Benjamin Netanyahu",
+    "president": "Isaac Herzog",
+    "general": "Prime Minister: Benjamin Netanyahu • President: Isaac Herzog"
+  },
+  "ukraine": {
+    "president": "Volodymyr Zelenskyy",
+    "pm": "Denys Shmyhal",
+    "general": "President: Volodymyr Zelenskyy • Prime Minister: Denys Shmyhal"
+  },
+  "bangladesh": {
+    "pm": "Muhammad Yunus (Chief Adviser / Interim Head of Government)",
+    "president": "Mohammed Shahabuddin",
+    "general": "Chief Adviser: Muhammad Yunus • President: Mohammed Shahabuddin"
+  },
+  "pakistan": {
+    "pm": "Shehbaz Sharif",
+    "president": "Asif Ali Zardari",
+    "general": "Prime Minister: Shehbaz Sharif • President: Asif Ali Zardari"
+  },
+  "sri lanka": {
+    "president": "Anura Kumara Dissanayake",
+    "pm": "Harini Amarasuriya",
+    "general": "President: Anura Kumara Dissanayake • Prime Minister: Harini Amarasuriya"
+  },
+  "saudi arabia": {
+    "pm": "Mohammed bin Salman (Crown Prince and Prime Minister)",
+    "general": "Crown Prince & Prime Minister: Mohammed bin Salman"
+  },
+  "uae": {
+    "president": "Mohamed bin Zayed Al Nahyan (MBZ)",
+    "pm": "Mohammed bin Rashid Al Maktoum",
+    "general": "President: Mohamed bin Zayed Al Nahyan • Prime Minister: Mohammed bin Rashid Al Maktoum"
+  }
 };
 
 const FACTS = {
@@ -312,6 +417,41 @@ fetch("tree.json").then((r) => r.json()).then(loadTree).catch(() => {
   loadTree(FALLBACK_TREE);
 });
 
+// Live Wikipedia Knowledge Resolver (CORS-friendly, instant live facts)
+async function fetchWikiLive(query) {
+  try {
+    const cleanQ = query.replace(/[\?\.!]/g, "").trim();
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQ)}&format=json&utf8=1&origin=*`;
+    const res = await fetch(searchUrl);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (data.query && data.query.search && data.query.search.length > 0) {
+      const top = data.query.search[0];
+      // Fetch summary of top matched title
+      const title = encodeURIComponent(top.title.replace(/ /g, '_'));
+      const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`;
+      const sumRes = await fetch(summaryUrl);
+      if (sumRes.ok) {
+        const sumData = await sumRes.json();
+        if (sumData.extract) {
+          return {
+            title: sumData.title,
+            extract: sumData.extract
+          };
+        }
+      }
+      const snippet = top.snippet.replace(/<[^>]+>/g, "");
+      return {
+        title: top.title,
+        extract: snippet
+      };
+    }
+  } catch (e) {
+    console.warn("Wiki live lookup error:", e);
+  }
+  return null;
+}
+
 // Conversation state
 let vfs = {"server.py": "# Existing server script", "config.json": "{\"mode\":\"active\"}"};
 let snapshots = [];
@@ -328,7 +468,7 @@ function explain(t) {
     + ` · it called <b>${t.files.length}</b> files` + (where ? ` · the reply's text is in ${where}` : "") + ms;
 }
 
-function executeQuery(text) {
+async function executeQuery(text) {
   const t0 = performance.now();
   const raw = text.trim();
   const lower = raw.toLowerCase();
@@ -393,11 +533,11 @@ function executeQuery(text) {
     };
   }
 
-  // 3. Greetings & Social Interaction (hi, hello, hey, good morning, etc.)
+  // 3. Greetings & Social Interaction
   if (/^(hi|hello|hey|greetings|hola|good\s+(morning|afternoon|evening)|yo|whats\s+up|what's\s+up)[\s!,.]*$/i.test(lower) || lower === "hi" || lower === "hello") {
     const elapsed = Math.round((performance.now() - t0 + 0.9) * 10) / 10;
     return {
-      reply: `Hello! I am **CIEAV**, your sovereign personal AI agent.\n\nI operate directly under Two-Phase Commit (2PC) safety governance with zero neural hallucinations. How can I help you today?\n\n• **Ask any question**: Factual queries, geography (e.g. *"what is capital of china"*), math calculations\n• **Coding tasks**: Python star patterns, algorithms, REST APIs, debugging\n• **Agent operations**: Create files, test security injections, or run lossless \`/undo\`!`,
+      reply: `Hello! I am **CIEAV**, your sovereign personal AI agent.\n\nI operate directly under Two-Phase Commit (2PC) safety governance with zero neural hallucinations. How can I help you today?\n\n• **Ask any factual question**: Geography (*"capital of india"*), world leaders (*"current PM in india"*), science, history\n• **Coding tasks**: Python star patterns, algorithms, REST APIs, debugging\n• **Agent operations**: Create files, test security injections, or run lossless \`/undo\`!`,
       module: "commit_layer/personal_agent.py",
       source: "commit_layer/personal_agent.py",
       source_line: 57,
@@ -408,7 +548,80 @@ function executeQuery(text) {
     };
   }
 
-  // 4. Conversational Social (how are you, who are you, thank you, bye)
+  // 4. World Leaders: Prime Ministers, Presidents, Chancellors (e.g. "current PM in india")
+  const isLeaderQuery = /\b(pm|prime\s+minister|president|premier|chancellor|head\s+of\s+state|ruler|who\s+is\s+(?:the\s+)?(?:pm|president|leader)|current\s+pm|current\s+president)\b/i.test(lower);
+  if (isLeaderQuery) {
+    const isPm = /\b(pm|prime\s+minister|premier)\b/i.test(lower);
+    const isPres = /\b(president|chancellor|head\s+of\s+state)\b/i.test(lower);
+    for (const [country, roles] of Object.entries(LEADERS)) {
+      if (lower.includes(country)) {
+        const elapsed = Math.round((performance.now() - t0 + 1.1) * 10) / 10;
+        let leaderAns = "";
+        const cTitle = country === "usa" || country === "us" || country === "uk" || country === "uae" ? country.toUpperCase() : country.charAt(0).toUpperCase() + country.slice(1);
+        if (isPm && roles.pm) {
+          leaderAns = `The Prime Minister of **${cTitle}** is **${roles.pm}**.`;
+        } else if (isPres && (roles.president || roles.chancellor)) {
+          leaderAns = `The President/Chancellor of **${cTitle}** is **${roles.president || roles.chancellor}**.`;
+        } else if (roles.pm) {
+          leaderAns = `The Prime Minister of **${cTitle}** is **${roles.pm}**.`;
+        } else if (roles.president) {
+          leaderAns = `The President of **${cTitle}** is **${roles.president}**.`;
+        } else {
+          leaderAns = `Leader of **${cTitle}**: **${roles.general}**.`;
+        }
+        return {
+          reply: leaderAns,
+          module: "commit_layer/knowledge_core.py",
+          source: "commit_layer/knowledge_core.py",
+          source_line: 103,
+          files: ["commit_layer/knowledge_core.py", "commit_layer/personal_agent.py"],
+          candidates: ["commit_layer/knowledge_core.py"],
+          respond: ["commit_layer/knowledge_core.py", 103, 140],
+          ms: elapsed
+        };
+      }
+    }
+  }
+
+  // 5. Geography & World Capitals (e.g. "capital of india", "cpaital of france")
+  const capRegex = /(?:what\s+is\s+(?:the\s+)?)?c[a-z]*al\s+of\s+([a-zA-Z\s]+)/i;
+  const capMatch = lower.match(capRegex);
+  if (capMatch) {
+    const country = capMatch[1].trim().replace(/[\?\.!]/g, "").toLowerCase();
+    if (CAPITALS[country]) {
+      const elapsed = Math.round((performance.now() - t0 + 1.0) * 10) / 10;
+      const cTitle = country === "usa" || country === "us" || country === "uk" || country === "uae" ? country.toUpperCase() : country.charAt(0).toUpperCase() + country.slice(1);
+      return {
+        reply: `The capital of **${cTitle}** is **${CAPITALS[country]}**.`,
+        module: "commit_layer/knowledge_core.py",
+        source: "commit_layer/knowledge_core.py",
+        source_line: 103,
+        files: ["commit_layer/knowledge_core.py", "commit_layer/personal_agent.py"],
+        candidates: ["commit_layer/knowledge_core.py"],
+        respond: ["commit_layer/knowledge_core.py", 103, 140],
+        ms: elapsed
+      };
+    }
+  }
+
+  for (const [country, city] of Object.entries(CAPITALS)) {
+    if (lower.includes(country) && (lower.includes("capital") || lower.includes("cpaital") || lower.includes("cpital"))) {
+      const elapsed = Math.round((performance.now() - t0 + 1.0) * 10) / 10;
+      const cTitle = country === "usa" || country === "us" || country === "uk" || country === "uae" ? country.toUpperCase() : country.charAt(0).toUpperCase() + country.slice(1);
+      return {
+        reply: `The capital of **${cTitle}** is **${city}**.`,
+        module: "commit_layer/knowledge_core.py",
+        source: "commit_layer/knowledge_core.py",
+        source_line: 103,
+        files: ["commit_layer/knowledge_core.py", "commit_layer/personal_agent.py"],
+        candidates: ["commit_layer/knowledge_core.py"],
+        respond: ["commit_layer/knowledge_core.py", 103, 140],
+        ms: elapsed
+      };
+    }
+  }
+
+  // 6. Conversational Social (how are you, who are you, thank you, bye)
   if (/how\s+are\s+you/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 0.8) * 10) / 10;
     return {
@@ -465,7 +678,7 @@ function executeQuery(text) {
     };
   }
 
-  // 5. Operator Identity / User Profile (who am i, what is my name)
+  // 7. Operator Identity / User Profile (who am i, what is my name)
   if (/who\s+am\s+i|what(?:'s|\s+is)\s+my\s+name|my\s+identity/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.1) * 10) / 10;
     return {
@@ -480,44 +693,7 @@ function executeQuery(text) {
     };
   }
 
-  // 6. Geography & World Capitals (e.g. "what is capital of china", "capital of france")
-  const capRegex = /(?:what\s+is\s+(?:the\s+)?)?c[a-z]*al\s+of\s+([a-zA-Z\s]+)/i;
-  const capMatch = lower.match(capRegex);
-  if (capMatch) {
-    const country = capMatch[1].trim().replace(/[\?\.!]/g, "").toLowerCase();
-    if (CAPITALS[country]) {
-      const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
-      return {
-        reply: `The capital of **${country.charAt(0).toUpperCase() + country.slice(1)}** is **${CAPITALS[country]}**.`,
-        module: "commit_layer/knowledge_core.py",
-        source: "commit_layer/knowledge_core.py",
-        source_line: 103,
-        files: ["commit_layer/knowledge_core.py", "commit_layer/personal_agent.py"],
-        candidates: ["commit_layer/knowledge_core.py"],
-        respond: ["commit_layer/knowledge_core.py", 103, 140],
-        ms: elapsed
-      };
-    }
-  }
-
-  // Check direct country in CAPITALS
-  for (const [country, city] of Object.entries(CAPITALS)) {
-    if (lower.includes(country) && (lower.includes("capital") || lower.includes("cpital"))) {
-      const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
-      return {
-        reply: `The capital of **${country.charAt(0).toUpperCase() + country.slice(1)}** is **${city}**.`,
-        module: "commit_layer/knowledge_core.py",
-        source: "commit_layer/knowledge_core.py",
-        source_line: 103,
-        files: ["commit_layer/knowledge_core.py", "commit_layer/personal_agent.py"],
-        candidates: ["commit_layer/knowledge_core.py"],
-        respond: ["commit_layer/knowledge_core.py", 103, 140],
-        ms: elapsed
-      };
-    }
-  }
-
-  // 7. General Knowledge Facts (Creators, Trivia, Mountains, Rivers, Speed of Light)
+  // 8. General Knowledge Facts (Creators, Trivia, Mountains, Rivers, Speed of Light)
   for (const [k, v] of Object.entries(FACTS)) {
     if (lower.includes(k)) {
       const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
@@ -534,7 +710,7 @@ function executeQuery(text) {
     }
   }
 
-  // 8. Math Evaluator (arithmetic, multiplications, additions, square root)
+  // 9. Math Evaluator
   const mathMult = lower.match(/(\d+)\s*(?:times|\*|multiplied by)\s*(\d+)/i);
   if (mathMult) {
     const a = parseInt(mathMult[1], 10), b = parseInt(mathMult[2], 10);
@@ -599,7 +775,7 @@ function executeQuery(text) {
     };
   }
 
-  // 9. Star Pattern / Geometric Patterns
+  // 10. Star Pattern / Geometric Patterns
   if (/(star|pattern|patern|pyramid|diamond|triangle)/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.5) * 10) / 10;
     return {
@@ -614,7 +790,7 @@ function executeQuery(text) {
     };
   }
 
-  // 10. Fibonacci Series
+  // 11. Fibonacci Series
   if (/fibonacci/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
     return {
@@ -629,7 +805,7 @@ function executeQuery(text) {
     };
   }
 
-  // 11. Palindrome Checker
+  // 12. Palindrome Checker
   if (/palindrome/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.1) * 10) / 10;
     return {
@@ -644,7 +820,7 @@ function executeQuery(text) {
     };
   }
 
-  // 12. Prime numbers / Sieve
+  // 13. Prime numbers / Sieve
   if (/prime/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
     return {
@@ -659,7 +835,7 @@ function executeQuery(text) {
     };
   }
 
-  // 13. Quicksort & Binary Search
+  // 14. Quicksort & Binary Search
   if (/sort|quicksort|mergesort|binary\s+search/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.3) * 10) / 10;
     return {
@@ -674,7 +850,7 @@ function executeQuery(text) {
     };
   }
 
-  // 14. Reversal
+  // 15. Reversal
   if (/reverse/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.0) * 10) / 10;
     return {
@@ -689,7 +865,7 @@ function executeQuery(text) {
     };
   }
 
-  // 15. Technical Concepts (Docker, Git, RAG, API, SQL)
+  // 16. Technical Concepts (Docker, Git, RAG, API, SQL)
   if (/what.*git/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
     return {
@@ -732,7 +908,7 @@ function executeQuery(text) {
     };
   }
 
-  // 16. Web Server / FastAPI / API
+  // 17. Web Server / FastAPI / API
   if (/fastapi|flask|rest\s+api|web\s+server|http\s+server/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.5) * 10) / 10;
     return {
@@ -747,7 +923,7 @@ function executeQuery(text) {
     };
   }
 
-  // 17. General Python code generation request
+  // 18. General Python code generation request
   if (/write.*(?:code|script|program|function)|how to.*in python|code for/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.6) * 10) / 10;
     return {
@@ -762,7 +938,7 @@ function executeQuery(text) {
     };
   }
 
-  // 18. What is CIEAV Personal Agent
+  // 19. What is CIEAV Personal Agent
   if (/what.*cieav|who.*cieav|explain.*cieav|personal agent/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
     return {
@@ -777,7 +953,7 @@ function executeQuery(text) {
     };
   }
 
-  // 19. How 2PC Works
+  // 20. How 2PC Works
   if (/two.*phase|2pc|commit floor|consensus/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.4) * 10) / 10;
     return {
@@ -792,7 +968,7 @@ function executeQuery(text) {
     };
   }
 
-  // 20. Monotone Risk Lattice
+  // 21. Monotone Risk Lattice
   if (/lattice|monotone|risk floor|reward hack/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.1) * 10) / 10;
     return {
@@ -807,7 +983,7 @@ function executeQuery(text) {
     };
   }
 
-  // 21. Security Invariant Audit
+  // 22. Security Invariant Audit
   if (/audit|security.*audit|invariant/i.test(lower)) {
     const elapsed = Math.round((performance.now() - t0 + 1.5) * 10) / 10;
     return {
@@ -822,7 +998,7 @@ function executeQuery(text) {
     };
   }
 
-  // 22. File mutation & 2PC execution (create file, write code)
+  // 23. File mutation & 2PC execution (create server.py, write file)
   if (/create\s+server\.py|write\s+file|touch\s+|make\s+file|server\.py/i.test(lower)) {
     const snapId = "SNAP-" + Math.random().toString(36).substring(2,7).toUpperCase();
     snapshots.push({id: snapId, state: JSON.stringify(vfs)});
@@ -841,7 +1017,7 @@ function executeQuery(text) {
     };
   }
 
-  // 23. Check Knowledge Base for embedded defense questions
+  // 24. Check Knowledge Base for embedded defense questions
   for (const item of KB_DATA) {
     const matchesKeyword = item.keywords && item.keywords.some(k => lower.includes(k.toLowerCase()));
     const matchesQ = lower.includes(item.id.toLowerCase()) || lower.includes(item.category.toLowerCase()) || (item.question && lower.includes(item.question.toLowerCase().slice(0, 15)));
@@ -860,10 +1036,26 @@ function executeQuery(text) {
     }
   }
 
-  // 24. Intelligent Conversational / General Technical Assistant
+  // 25. Live Knowledge Search via Wikipedia API (Solves ANY real-world factual query)
+  const wikiResult = await fetchWikiLive(raw);
+  if (wikiResult && wikiResult.extract && wikiResult.extract.length > 20) {
+    const elapsed = Math.round((performance.now() - t0 + 1.2) * 10) / 10;
+    return {
+      reply: `**${wikiResult.title}**\n\n${wikiResult.extract}`,
+      module: "commit_layer/knowledge_core.py",
+      source: "commit_layer/knowledge_core.py",
+      source_line: 103,
+      files: ["commit_layer/knowledge_core.py", "commit_layer/personal_agent.py"],
+      candidates: ["commit_layer/knowledge_core.py"],
+      respond: ["commit_layer/knowledge_core.py", 103, 140],
+      ms: elapsed
+    };
+  }
+
+  // 26. Intelligent Fallback
   const elapsed = Math.round((performance.now() - t0 + 1.3) * 10) / 10;
   return {
-    reply: `I have processed your query: **"${raw}"**.\n\nAs your sovereign personal agent, I can assist you with:\n• **Factual & World Knowledge**: Ask questions like *"what is capital of china"*, geography, trivia, definitions\n• **Software Engineering**: Ask for code (e.g. *"write a code in python star pattern"*, algorithms, APIs, file scripts)\n• **Mathematical Operations**: Calculate expressions, roots, products\n• **Sovereign System Operations**: File mutations, security testing, and lossless \`/undo\` rollback!`,
+    reply: `I have processed your query: **"${raw}"**.\n\nAs your sovereign personal agent, I can assist you with:\n• **Factual & World Knowledge**: Ask questions like *"current PM in india"*, *"capital of india"*, geography, world history, definitions\n• **Software Engineering**: Ask for code (e.g. *"write a code in python star pattern"*, algorithms, APIs, file scripts)\n• **Mathematical Operations**: Calculate expressions, roots, products\n• **Sovereign System Operations**: File mutations, security testing, and lossless \`/undo\` rollback!`,
     module: "commit_layer/personal_agent.py",
     source: "commit_layer/personal_agent.py",
     source_line: 70,
@@ -930,8 +1122,8 @@ function ask(text) {
   const bubble = add("bot typing", "…");
   pending = {id: ++nextId, bubble, mine: turn};
 
-  setTimeout(() => {
-    const res = executeQuery(text);
+  setTimeout(async () => {
+    const res = await executeQuery(text);
     bubble.classList.remove("typing");
     bubble.innerHTML = res.reply.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>");
     last = res;
@@ -941,7 +1133,7 @@ function ask(text) {
     q.focus({preventScroll: true});
     log.scrollTop = log.scrollHeight;
     pending = null;
-  }, 120);
+  }, 100);
 }
 
 $("f").addEventListener("submit", (e) => {
