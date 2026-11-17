@@ -16,7 +16,9 @@
 
 ⚡ **Instant Launch**: Clone and double-click **`Start-CIEAV.bat`** (or run `cieav` in PowerShell) to start the autonomous agent runtime!
 
-Video : https://www.loom.com/share/5e0c06f2fe1d4f02852c4dd5f9ff5c01?t=4
+🎮 **Live Interactive Hugging Face Space**: **[https://huggingface.co/spaces/Aravindhan11/Cieav-Agent](https://huggingface.co/spaces/Aravindhan11/Cieav-Agent)** *(Test PyBot Pure-Python reasoning, Two-Phase Commit safety floor, and live `/undo` rollbacks directly in your browser!)*  
+🤗 **Hugging Face Research Model**: **[https://huggingface.co/Aravindhan11/Cieav-model](https://huggingface.co/Aravindhan11/Cieav-model)** *(82.3MB SafeTensors LoRA adapter post-trained against reward hacking)*  
+📺 **Architecture Video**: https://www.loom.com/share/5e0c06f2fe1d4f02852c4dd5f9ff5c01?t=4
 ---
 
 ## Table of Contents
