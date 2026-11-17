@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIEAV: Sovereign Personal AI Agent • 2PC & PyBot Space</title>
+    <title>CIEAV: Sovereign Personal AI Agent • Pure White Edition</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,18 +12,15 @@
                 extend: {
                     colors: {
                         cieav: {
-                            900: '#0b0f19',
-                            800: '#111827',
-                            700: '#1f2937',
-                            accent: '#8b5cf6',
-                            emerald: '#10b981',
-                            crimson: '#ef4444',
-                            amber: '#f59e0b',
+                            purple: '#7c3aed',
+                            indigo: '#4f46e5',
+                            dark: '#0f172a',
+                            light: '#f8fafc',
                         }
                     },
                     fontFamily: {
                         mono: ['JetBrains Mono', 'Menlo', 'monospace'],
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
                     }
                 }
             }
@@ -32,41 +29,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #111827; }
-        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
-        .glass-panel {
-            background: rgba(17, 24, 39, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(75, 85, 99, 0.3);
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .white-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+        }
+        .white-card-hover {
+            transition: all 0.15s ease-in-out;
+        }
+        .white-card-hover:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
-<body class="bg-cieav-900 text-gray-100 font-sans min-h-screen flex flex-col">
+<body class="bg-[#f8fafc] text-slate-800 font-sans min-h-screen flex flex-col antialiased">
 
-    <!-- Top Navigation Header -->
-    <header class="border-b border-gray-800 bg-cieav-800/90 sticky top-0 z-50 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+    <!-- Top Navigation Header (Pure White & Clean) -->
+    <header class="border-b border-slate-200 bg-white sticky top-0 z-50 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-xs">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <i class="fa-solid fa-shield-halved text-white text-xl"></i>
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center shadow-md shadow-purple-500/15">
+                <i class="fa-solid fa-shield-halved text-white text-lg"></i>
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <span class="text-xl font-bold tracking-tight text-white">CIEAV</span>
-                    <span class="text-xs px-2 py-0.5 rounded-full bg-purple-900/60 text-purple-300 border border-purple-500/30 font-mono">v2.4 Sovereign Agent</span>
+                    <span class="text-xl font-bold tracking-tight text-slate-900">CIEAV</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 font-mono font-medium">v2.4 Sovereign Agent</span>
                 </div>
-                <p class="text-xs text-gray-400">Two-Phase Commit Safety Floor • PyBot Symbolic Reasoner</p>
+                <p class="text-xs text-slate-500">Two-Phase Commit Safety Floor • PyBot Pure-Python Engine</p>
             </div>
         </div>
 
         <!-- Live Links & Badges -->
         <div class="flex items-center flex-wrap gap-2 text-xs font-mono">
-            <a href="https://huggingface.co/Aravindhan11/Cieav-model" target="_blank" class="px-3 py-1.5 rounded-lg bg-yellow-950/40 text-yellow-300 border border-yellow-700/40 hover:bg-yellow-900/40 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-cube text-yellow-400"></i> Model: Cieav-model (82MB)
+            <a href="https://huggingface.co/Aravindhan11/Cieav-model" target="_blank" class="px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition flex items-center gap-1.5 font-medium">
+                <i class="fa-solid fa-cube text-amber-600"></i> Model: Cieav-model (82MB)
             </a>
-            <a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 transition flex items-center gap-1.5">
-                <i class="fa-brands fa-github"></i> GitHub Monorepo
+            <a href="https://github.com/Aravindh-dev12/cieav-personal-agent" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition flex items-center gap-1.5 font-medium">
+                <i class="fa-brands fa-github text-slate-800"></i> GitHub Repo
             </a>
-            <div class="px-2.5 py-1 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-700/50 flex items-center gap-1.5">
+            <div class="px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-medium">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 2PC Floor Active
             </div>
         </div>
@@ -79,94 +84,110 @@
         <section class="lg:col-span-7 flex flex-col gap-4">
             
             <!-- Model Gateway & Settings Strip -->
-            <div class="glass-panel rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="white-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-mono text-gray-400 uppercase tracking-wider">Active Reasoner:</span>
-                    <select id="modelSelector" class="bg-gray-900 border border-gray-700 text-purple-300 text-xs rounded-lg px-3 py-1.5 font-mono focus:outline-none focus:border-purple-500">
+                    <span class="text-xs font-mono text-slate-500 uppercase tracking-wider font-semibold">Reasoner Engine:</span>
+                    <select id="modelSelector" class="bg-slate-50 border border-slate-200 text-purple-700 font-semibold text-xs rounded-lg px-3 py-1.5 font-mono focus:outline-none focus:border-purple-600 focus:bg-white transition">
                         <option value="pybot">⚡ PyBot Pure-Python (0 MB weights, HF PyBot style)</option>
                         <option value="qwen_lora">🧠 CIEAV Qwen-7B LoRA (Aravindhan11/Cieav-model)</option>
                         <option value="nvidia_nim">☁️ NVIDIA NIM Nemotron-3.5-Bolt (Cloud CoT)</option>
                     </select>
                 </div>
-                <div class="flex items-center gap-2 text-xs font-mono text-gray-400">
-                    <span class="text-emerald-400"><i class="fa-solid fa-lock"></i> Authority: False (LLM Cannot Directly Execute)</span>
+                <div class="flex items-center gap-2 text-xs font-mono text-slate-600">
+                    <span class="text-emerald-700 font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-lock text-emerald-600"></i> Authority: False (Model Cannot Execute Directly)
+                    </span>
                 </div>
             </div>
 
             <!-- Attack Presets & Scenarios -->
-            <div class="glass-panel rounded-xl p-3">
-                <div class="text-xs font-mono text-gray-400 uppercase tracking-wider mb-2 flex items-center justify-between">
-                    <span><i class="fa-solid fa-flask-vial mr-1 text-purple-400"></i> Preset Attack & Safety Verifications:</span>
-                    <span class="text-[10px] text-gray-500">Click to simulate</span>
+            <div class="white-card rounded-2xl p-4">
+                <div class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2.5 flex items-center justify-between font-semibold">
+                    <span><i class="fa-solid fa-flask-vial mr-1.5 text-purple-600"></i> Preset Safety Scenarios & Attacks:</span>
+                    <span class="text-[11px] text-slate-400 font-normal">Click any card to simulate</span>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <button onclick="runPreset('attack_root')" class="p-2 rounded-lg bg-red-950/40 hover:bg-red-900/50 border border-red-800/40 text-left text-xs transition">
-                        <span class="text-red-400 font-bold block mb-0.5"><i class="fa-solid fa-skull mr-1"></i> Root Deletion</span>
-                        <span class="text-[10px] text-gray-400 font-mono">rm -rf / --no-preserve</span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <button onclick="runPreset('attack_root')" class="p-2.5 rounded-xl bg-red-50/60 hover:bg-red-50 border border-red-200/80 text-left text-xs transition white-card-hover group">
+                        <div class="flex items-center gap-1.5 text-red-700 font-bold mb-1">
+                            <span class="w-5 h-5 rounded-md bg-red-100 flex items-center justify-center text-red-600 text-[10px] group-hover:scale-110 transition"><i class="fa-solid fa-skull"></i></span>
+                            <span>Root Wipe</span>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-mono block truncate">rm -rf / --no-preserve</span>
                     </button>
-                    <button onclick="runPreset('attack_secrets')" class="p-2 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-800/40 text-left text-xs transition">
-                        <span class="text-amber-400 font-bold block mb-0.5"><i class="fa-solid fa-key mr-1"></i> Secret Exfil</span>
-                        <span class="text-[10px] text-gray-400 font-mono">cat .env & export API</span>
+                    <button onclick="runPreset('attack_secrets')" class="p-2.5 rounded-xl bg-amber-50/60 hover:bg-amber-50 border border-amber-200/80 text-left text-xs transition white-card-hover group">
+                        <div class="flex items-center gap-1.5 text-amber-700 font-bold mb-1">
+                            <span class="w-5 h-5 rounded-md bg-amber-100 flex items-center justify-center text-amber-600 text-[10px] group-hover:scale-110 transition"><i class="fa-solid fa-key"></i></span>
+                            <span>Secret Exfil</span>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-mono block truncate">cat .env & export API</span>
                     </button>
-                    <button onclick="runPreset('attack_sycophancy')" class="p-2 rounded-lg bg-purple-950/40 hover:bg-purple-900/50 border border-purple-800/40 text-left text-xs transition">
-                        <span class="text-purple-300 font-bold block mb-0.5"><i class="fa-solid fa-masks-theater mr-1"></i> Sycophancy</span>
-                        <span class="text-[10px] text-gray-400 font-mono">Apologetic drop db</span>
+                    <button onclick="runPreset('attack_sycophancy')" class="p-2.5 rounded-xl bg-purple-50/60 hover:bg-purple-50 border border-purple-200/80 text-left text-xs transition white-card-hover group">
+                        <div class="flex items-center gap-1.5 text-purple-700 font-bold mb-1">
+                            <span class="w-5 h-5 rounded-md bg-purple-100 flex items-center justify-center text-purple-600 text-[10px] group-hover:scale-110 transition"><i class="fa-solid fa-masks-theater"></i></span>
+                            <span>Sycophancy</span>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-mono block truncate">Apologetic drop db</span>
                     </button>
-                    <button onclick="runPreset('safe_task')" class="p-2 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-800/40 text-left text-xs transition">
-                        <span class="text-emerald-400 font-bold block mb-0.5"><i class="fa-solid fa-check mr-1"></i> Safe Task</span>
-                        <span class="text-[10px] text-gray-400 font-mono">git status & diff check</span>
+                    <button onclick="runPreset('safe_task')" class="p-2.5 rounded-xl bg-emerald-50/60 hover:bg-emerald-50 border border-emerald-200/80 text-left text-xs transition white-card-hover group">
+                        <div class="flex items-center gap-1.5 text-emerald-700 font-bold mb-1">
+                            <span class="w-5 h-5 rounded-md bg-emerald-100 flex items-center justify-center text-emerald-600 text-[10px] group-hover:scale-110 transition"><i class="fa-solid fa-check"></i></span>
+                            <span>Safe Task</span>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-mono block truncate">git status & diff inspect</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Terminal / Chat History Window -->
-            <div class="glass-panel rounded-xl flex-1 flex flex-col p-4 overflow-hidden min-h-[420px]">
-                <div class="flex items-center justify-between border-b border-gray-800 pb-2 mb-3">
+            <!-- Terminal / Chat History Window (Modern Pure White Chat Style) -->
+            <div class="white-card rounded-2xl flex-1 flex flex-col p-5 overflow-hidden min-h-[440px]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
                     <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
-                        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
-                        <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
-                        <span class="ml-2 text-xs font-mono text-gray-400">cieav-session@sovereign-agent:~$</span>
+                        <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                        <span class="ml-2 text-xs font-mono text-slate-500 font-medium">cieav-session@sovereign-agent:~$</span>
                     </div>
-                    <button onclick="clearHistory()" class="text-xs text-gray-500 hover:text-gray-300 font-mono transition">
-                        <i class="fa-solid fa-trash mr-1"></i> Clear
+                    <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-slate-600 font-mono transition flex items-center gap-1">
+                        <i class="fa-solid fa-trash-can text-[11px]"></i> Clear Chat
                     </button>
                 </div>
 
                 <!-- Messages Stream -->
-                <div id="chatHistory" class="flex-1 overflow-y-auto space-y-4 pr-2 font-mono text-xs">
-                    <!-- Initial Welcome Message -->
-                    <div class="p-3.5 rounded-lg bg-purple-950/30 border border-purple-800/30">
+                <div id="chatHistory" class="flex-1 overflow-y-auto space-y-4 pr-1 text-xs">
+                    <!-- Initial Welcome Message (Pure White Modern Box) -->
+                    <div class="p-4 rounded-xl bg-purple-50/60 border border-purple-200/70 shadow-xs">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-purple-300 flex items-center gap-1.5">
-                                <i class="fa-solid fa-robot"></i> CIEAV Sovereign Agent Initialized
+                            <span class="font-bold text-purple-900 flex items-center gap-2 text-sm">
+                                <span class="w-6 h-6 rounded-lg bg-purple-600 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-robot"></i></span>
+                                CIEAV Sovereign Agent Initialized
                             </span>
-                            <span class="text-[10px] text-purple-400/80 bg-purple-900/40 px-2 py-0.5 rounded">PyBot Engine Active</span>
+                            <span class="text-[10px] text-purple-700 font-mono bg-purple-100/80 px-2 py-0.5 rounded-md font-semibold border border-purple-200">PyBot Engine Active</span>
                         </div>
-                        <p class="text-gray-300 leading-relaxed">
-                            Welcome to the live interactive showcase of <strong>CIEAV</strong>. Every command you execute is governed by our <strong>Two-Phase Commit (2PC) safety floor</strong>. The language model proposes actions, but cannot execute them without a verifiable 60s cryptographic permit and atomic snapshot.
+                        <p class="text-slate-700 leading-relaxed text-xs">
+                            Welcome to the live interactive showcase of <strong>CIEAV</strong>. Every task you issue is governed by our <strong>Two-Phase Commit (2PC) safety floor</strong>. The language model acts as an untrusted reasoning engine (`authority: False`). It proposes plans, but execution is blocked unless a 60s cryptographic permit is issued and an atomic snapshot is anchored.
                         </p>
-                        <div class="mt-2 text-[11px] text-gray-400 flex flex-wrap gap-3">
-                            <span>• Latency: <strong class="text-emerald-400">&lt;2ms</strong> (Pure-Python AST)</span>
-                            <span>• Rollback: <strong class="text-purple-300">Lossless /undo</strong></span>
-                            <span>• Jailbreak Immunity: <strong class="text-emerald-400">100%</strong></span>
+                        <div class="mt-3 pt-2.5 border-t border-purple-200/60 text-[11px] font-mono text-slate-600 flex flex-wrap gap-4">
+                            <span>• Latency: <strong class="text-emerald-700">&lt;2ms</strong> (Pure-Python AST)</span>
+                            <span>• Weights Downloaded: <strong class="text-purple-700">0 MB</strong></span>
+                            <span>• Rollback: <strong class="text-purple-700">Lossless /undo</strong></span>
+                            <span>• Prompt Injection Defense: <strong class="text-emerald-700">100%</strong></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Prompt Input Bar -->
-                <div class="mt-3 pt-3 border-t border-gray-800 flex gap-2">
+                <!-- Prompt Input Bar (Crisp White & Elevated) -->
+                <div class="mt-4 pt-3.5 border-t border-slate-100 flex gap-2">
                     <div class="relative flex-1">
                         <input id="promptInput" type="text" placeholder="Type a task (e.g. 'audit security diff', 'rm -rf /', '/undo', 'cat .env')..."
-                            class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-xs font-mono text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-600 focus:ring-2 focus:ring-purple-500/15 shadow-xs transition"
                             onkeydown="if(event.key === 'Enter') handleSend()">
                     </div>
-                    <button onclick="handleSend()" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-lg text-xs font-mono font-bold flex items-center gap-2 transition shadow-md shadow-purple-900/30">
+                    <button onclick="handleSend()" class="px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition shadow-md shadow-purple-500/20 active:scale-95">
                         <span>Dispatch</span>
                         <i class="fa-solid fa-arrow-turn-down -rotate-90"></i>
                     </button>
-                    <button onclick="handleUndo()" class="px-3 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition" title="Trigger instant rollback">
-                        <i class="fa-solid fa-rotate-left text-amber-400"></i>
+                    <button onclick="handleUndo()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition active:scale-95" title="Trigger instant rollback">
+                        <i class="fa-solid fa-rotate-left text-amber-600"></i>
                         <span>/undo</span>
                     </button>
                 </div>
@@ -176,96 +197,96 @@
         <!-- Right Panel: Live PyBot Tracing & 2PC Pipeline (5 Cols) -->
         <section class="lg:col-span-5 flex flex-col gap-4">
             
-            <!-- PyBot Symbolic Reasoner Tracing (HF PyBot Style) -->
-            <div class="glass-panel rounded-xl p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
-                    <span class="text-xs font-mono font-bold uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
-                        <i class="fa-solid fa-code text-purple-400"></i> PyBot Symbolic Trace
+            <!-- PyBot Symbolic Reasoner Tracing (Pure White Style) -->
+            <div class="white-card rounded-2xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                    <span class="text-xs font-mono font-bold uppercase tracking-wider text-purple-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-code text-purple-600"></i> PyBot Symbolic Trace
                     </span>
-                    <span id="traceLatency" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+                    <span id="traceLatency" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
                         ⚡ 1.24 ms • Pure-Python
                     </span>
                 </div>
 
                 <!-- 4 PyBot Core Modules -->
                 <div class="space-y-2 text-xs font-mono">
-                    <div class="p-2 rounded bg-gray-900/80 border border-gray-800">
-                        <div class="text-[10px] text-gray-500 uppercase">1. Understanding Layer (Intent & AST)</div>
-                        <div id="traceUnderstanding" class="text-purple-300 text-[11px] mt-0.5">Intent: general_query • RegEx AST Invariants Clean</div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div class="text-[10px] text-slate-500 uppercase font-semibold">1. Understanding Layer (Intent & AST)</div>
+                        <div id="traceUnderstanding" class="text-purple-700 text-[11px] mt-0.5 font-medium">Intent: general_query • RegEx AST Invariants Clean</div>
                     </div>
-                    <div class="p-2 rounded bg-gray-900/80 border border-gray-800">
-                        <div class="text-[10px] text-gray-500 uppercase">2. Knowledge Layer (Deterministic Invariants)</div>
-                        <div id="traceKnowledge" class="text-gray-300 text-[11px] mt-0.5">Matched: Safety Floor Invariant (0 MB Weights Downloaded)</div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div class="text-[10px] text-slate-500 uppercase font-semibold">2. Knowledge Layer (Deterministic Invariants)</div>
+                        <div id="traceKnowledge" class="text-slate-700 text-[11px] mt-0.5">Matched: Safety Floor Invariant (0 MB Weights Downloaded)</div>
                     </div>
-                    <div class="p-2 rounded bg-gray-900/80 border border-gray-800">
-                        <div class="text-[10px] text-gray-500 uppercase">3. Memory & Rollback Layer</div>
-                        <div id="traceMemory" class="text-gray-300 text-[11px] mt-0.5">Turn: #0 • Rollback Anchor: SNAP-ROOT-001 (Synced)</div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div class="text-[10px] text-slate-500 uppercase font-semibold">3. Memory & Rollback Layer</div>
+                        <div id="traceMemory" class="text-slate-700 text-[11px] mt-0.5">Turn: #0 • Rollback Anchor: SNAP-ROOT-001 (Synced)</div>
                     </div>
-                    <div class="p-2 rounded bg-gray-900/80 border border-gray-800">
-                        <div class="text-[10px] text-gray-500 uppercase">4. Compose Layer (2PC Structured Output)</div>
-                        <div id="traceCompose" class="text-emerald-400 text-[11px] mt-0.5">Proposal: Synthesize Action • Permit TTL: 60s</div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div class="text-[10px] text-slate-500 uppercase font-semibold">4. Compose Layer (2PC Structured Output)</div>
+                        <div id="traceCompose" class="text-emerald-700 text-[11px] mt-0.5 font-medium">Proposal: Synthesize Action • Permit TTL: 60s</div>
                     </div>
                 </div>
             </div>
 
             <!-- Two-Phase Commit (2PC) Lifecycle Pipeline -->
-            <div class="glass-panel rounded-xl p-4 flex flex-col gap-3">
-                <div class="flex items-center justify-between border-b border-gray-800 pb-2">
-                    <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrows-split-up-and-left text-emerald-400"></i> Two-Phase Commit Floor
+            <div class="white-card rounded-2xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                    <span class="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrows-split-up-and-left text-emerald-600"></i> Two-Phase Commit Floor
                     </span>
-                    <span id="riskBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+                    <span id="riskBadge" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
                         Floor: LOW
                     </span>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono">
-                    <div id="stepPrepare" class="p-2.5 rounded-lg bg-gray-900 border border-emerald-500/50 text-emerald-300 transition">
-                        <div class="text-[10px] text-gray-400">Phase 1</div>
+                    <div id="stepPrepare" class="p-2.5 rounded-xl bg-slate-50 border border-emerald-400 text-emerald-800 transition">
+                        <div class="text-[10px] text-slate-400">Phase 1</div>
                         <div class="font-bold text-[11px] mt-0.5"><i class="fa-solid fa-camera mr-1"></i> PREPARE</div>
-                        <div class="text-[9px] text-gray-500 mt-1">Snapshot & Lattice</div>
+                        <div class="text-[9px] text-slate-500 mt-1">Snapshot & Lattice</div>
                     </div>
-                    <div id="stepPermit" class="p-2.5 rounded-lg bg-gray-900 border border-gray-800 text-gray-400 transition">
-                        <div class="text-[10px] text-gray-400">Security Gate</div>
+                    <div id="stepPermit" class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 transition">
+                        <div class="text-[10px] text-slate-400">Security Gate</div>
                         <div class="font-bold text-[11px] mt-0.5"><i class="fa-solid fa-ticket mr-1"></i> PERMIT</div>
-                        <div class="text-[9px] text-gray-500 mt-1">60s Ephemeral Token</div>
+                        <div class="text-[9px] text-slate-500 mt-1">60s Ephemeral Token</div>
                     </div>
-                    <div id="stepCommit" class="p-2.5 rounded-lg bg-gray-900 border border-gray-800 text-gray-400 transition">
-                        <div class="text-[10px] text-gray-400">Phase 2</div>
+                    <div id="stepCommit" class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 transition">
+                        <div class="text-[10px] text-slate-400">Phase 2</div>
                         <div class="font-bold text-[11px] mt-0.5"><i class="fa-solid fa-circle-check mr-1"></i> COMMIT</div>
-                        <div class="text-[9px] text-gray-500 mt-1">Ed25519 Receipt</div>
+                        <div class="text-[9px] text-slate-500 mt-1">Ed25519 Receipt</div>
                     </div>
                 </div>
 
                 <!-- Active Sandbox State & Rollback Bar -->
-                <div class="p-2.5 rounded bg-gray-950 border border-gray-800 text-xs font-mono flex items-center justify-between">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono flex items-center justify-between">
                     <div>
-                        <span class="text-gray-400">Active State:</span>
-                        <span id="stateDisplay" class="text-emerald-400 ml-1">CLEAN_WORKSPACE (v1.0)</span>
+                        <span class="text-slate-500">Active State:</span>
+                        <span id="stateDisplay" class="text-emerald-700 font-bold ml-1">CLEAN_WORKSPACE (v1.0)</span>
                     </div>
-                    <button onclick="handleUndo()" class="px-2 py-1 bg-purple-900/40 hover:bg-purple-800/50 text-purple-300 border border-purple-700/40 rounded text-[10px] transition">
+                    <button onclick="handleUndo()" class="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-lg text-[10px] font-semibold transition">
                         <i class="fa-solid fa-clock-rotate-left mr-1"></i> Rollback State
                     </button>
                 </div>
             </div>
 
             <!-- Ed25519 Cryptographic Audit Chain -->
-            <div class="glass-panel rounded-xl p-4 flex-1 flex flex-col min-h-[220px]">
-                <div class="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
-                    <span class="text-xs font-mono font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-link text-indigo-400"></i> Ed25519 Audit Chain
+            <div class="white-card rounded-2xl p-4 flex-1 flex flex-col min-h-[220px]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-2.5">
+                    <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-link text-indigo-600"></i> Ed25519 Audit Chain
                     </span>
-                    <span class="text-[10px] font-mono text-gray-500">Append-Only Tamper-Evident</span>
+                    <span class="text-[10px] font-mono text-slate-400 font-medium">Append-Only Tamper-Evident</span>
                 </div>
                 
                 <div id="ledgerList" class="flex-1 overflow-y-auto space-y-2 font-mono text-[11px] pr-1">
-                    <div class="p-2 rounded bg-gray-900/60 border border-gray-800 flex flex-col gap-1">
+                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-1">
                         <div class="flex items-center justify-between text-[10px]">
-                            <span class="text-purple-400">RCPT-001 • GENESIS_COMMIT</span>
-                            <span class="text-gray-500">2026-11-17 11:00:00</span>
+                            <span class="text-purple-700 font-bold">RCPT-001 • GENESIS_COMMIT</span>
+                            <span class="text-slate-400">2026-11-17 11:00:00</span>
                         </div>
-                        <div class="text-gray-400 truncate">Hash: <span class="text-gray-300">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span></div>
-                        <div class="text-emerald-400 text-[10px]">Permit: ED25519-ROOT-GENESIS • Monotone Floor: LOW</div>
+                        <div class="text-slate-500 truncate text-[10px]">Hash: <span class="text-slate-700">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span></div>
+                        <div class="text-emerald-700 text-[10px] font-medium">Permit: ED25519-ROOT-GENESIS • Monotone Floor: LOW</div>
                     </div>
                 </div>
             </div>
@@ -274,8 +295,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-800 py-3 px-6 text-center text-xs font-mono text-gray-500 bg-cieav-800/40">
-        CIEAV Personal Agent • Open-Source Architecture under Apache 2.0 • Hosted on Hugging Face Spaces
+    <footer class="border-t border-slate-200 py-3.5 px-6 text-center text-xs font-mono text-slate-500 bg-white">
+        CIEAV Sovereign Personal Agent • Open-Source Architecture under Apache 2.0 • Pure White Edition
     </footer>
 
     <!-- Interactive Client Logic (Pure-JS Symbolic Engine mirroring Python pybot_engine.py) -->
@@ -367,11 +388,11 @@
             const riskBadge = document.getElementById("riskBadge");
             riskBadge.innerText = `Floor: ${risk}`;
             if (risk === "CRITICAL") {
-                riskBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800 animate-pulse";
+                riskBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-md bg-red-50 text-red-700 border border-red-300 font-bold animate-pulse";
             } else if (risk === "HIGH") {
-                riskBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800";
+                riskBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-300 font-bold";
             } else {
-                riskBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800";
+                riskBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-300 font-bold";
             }
 
             // Animate 2PC Pipeline
@@ -379,16 +400,16 @@
             const sPermit = document.getElementById("stepPermit");
             const sCommit = document.getElementById("stepCommit");
 
-            sPrepare.className = "p-2.5 rounded-lg bg-gray-900 border border-emerald-500 text-emerald-300";
+            sPrepare.className = "p-2.5 rounded-xl bg-slate-50 border border-emerald-500 text-emerald-700 font-bold";
             if (risk === "CRITICAL") {
-                sPermit.className = "p-2.5 rounded-lg bg-red-950/60 border border-red-600 text-red-400";
-                sCommit.className = "p-2.5 rounded-lg bg-gray-900 border border-gray-800 text-gray-500";
+                sPermit.className = "p-2.5 rounded-xl bg-red-50 border border-red-400 text-red-700 font-bold";
+                sCommit.className = "p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-400";
             } else if (risk === "HIGH") {
-                sPermit.className = "p-2.5 rounded-lg bg-amber-950/60 border border-amber-600 text-amber-300";
-                sCommit.className = "p-2.5 rounded-lg bg-gray-900 border border-emerald-500 text-emerald-300";
+                sPermit.className = "p-2.5 rounded-xl bg-amber-50 border border-amber-400 text-amber-700 font-bold";
+                sCommit.className = "p-2.5 rounded-xl bg-slate-50 border border-emerald-500 text-emerald-700 font-bold";
             } else {
-                sPermit.className = "p-2.5 rounded-lg bg-gray-900 border border-emerald-500/50 text-emerald-300";
-                sCommit.className = "p-2.5 rounded-lg bg-gray-900 border border-emerald-500 text-emerald-300";
+                sPermit.className = "p-2.5 rounded-xl bg-slate-50 border border-emerald-500 text-emerald-700 font-bold";
+                sCommit.className = "p-2.5 rounded-xl bg-slate-50 border border-emerald-500 text-emerald-700 font-bold";
             }
         }
 
@@ -396,32 +417,38 @@
             const history = document.getElementById("chatHistory");
             const div = document.createElement("div");
             
-            let colorClasses = "bg-gray-900/80 border-gray-800";
-            let badgeClass = "bg-gray-800 text-gray-300";
+            let colorClasses = "bg-white border-slate-200 shadow-xs";
+            let badgeClass = "bg-slate-100 text-slate-700 border-slate-200";
             
             if (riskLevel === "CRITICAL") {
-                colorClasses = "bg-red-950/30 border-red-800/40";
-                badgeClass = "bg-red-900/60 text-red-300 border border-red-600/40";
+                colorClasses = "bg-red-50/70 border-red-200 text-red-950";
+                badgeClass = "bg-red-100 text-red-800 border-red-300 font-bold";
             } else if (riskLevel === "HIGH") {
-                colorClasses = "bg-amber-950/30 border-amber-800/40";
-                badgeClass = "bg-amber-950/60 text-amber-300 border border-amber-600/40";
+                colorClasses = "bg-amber-50/70 border-amber-200 text-amber-950";
+                badgeClass = "bg-amber-100 text-amber-800 border-amber-300 font-bold";
             } else if (riskLevel === "SUCCESS") {
-                colorClasses = "bg-emerald-950/30 border-emerald-800/40";
-                badgeClass = "bg-emerald-900/60 text-emerald-300 border border-emerald-600/40";
+                colorClasses = "bg-emerald-50/70 border-emerald-200 text-emerald-950";
+                badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-300 font-bold";
+            } else if (role === "user") {
+                colorClasses = "bg-slate-100 border-slate-200/80 text-slate-800";
+                badgeClass = "bg-slate-200 text-slate-700 font-semibold";
             }
 
-            div.className = `p-3 rounded-lg border ${colorClasses}`;
+            div.className = `p-4 rounded-xl border ${colorClasses} transition`;
             div.innerHTML = `
                 <div class="flex items-center justify-between mb-1.5">
-                    <span class="font-bold flex items-center gap-1.5 text-gray-200">
-                        <i class="fa-solid ${role === 'user' ? 'fa-user text-purple-400' : 'fa-shield-halved text-emerald-400'}"></i> ${title}
+                    <span class="font-bold flex items-center gap-2 text-slate-900">
+                        <span class="w-5 h-5 rounded-md ${role === 'user' ? 'bg-purple-600 text-white' : 'bg-emerald-600 text-white'} flex items-center justify-center text-[10px]">
+                            <i class="fa-solid ${role === 'user' ? 'fa-user' : 'fa-shield-halved'}"></i>
+                        </span>
+                        <span>${title}</span>
                     </span>
-                    <span class="text-[10px] px-2 py-0.5 rounded font-mono ${badgeClass}">${riskLevel}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-md font-mono border ${badgeClass}">${riskLevel}</span>
                 </div>
-                <div class="text-gray-300 whitespace-pre-wrap leading-relaxed">${content}</div>
-                ${permitInfo ? `<div class="mt-2 pt-2 border-t border-gray-800/60 text-[10px] text-gray-400 font-mono flex items-center justify-between">
-                    <span>Permit: ${permitInfo.id} (TTL: 60s)</span>
-                    <span class="text-emerald-400"><i class="fa-solid fa-lock"></i> Signed with Ed25519</span>
+                <div class="text-slate-700 whitespace-pre-wrap leading-relaxed mt-1">${content}</div>
+                ${permitInfo ? `<div class="mt-2.5 pt-2 border-t border-slate-200/80 text-[10px] text-slate-500 font-mono flex items-center justify-between">
+                    <span>Permit: <strong class="text-slate-700">${permitInfo.id}</strong> (TTL: 60s)</span>
+                    <span class="text-emerald-700 font-semibold"><i class="fa-solid fa-lock"></i> Signed with Ed25519</span>
                 </div>` : ''}
             `;
             history.appendChild(div);
@@ -534,16 +561,16 @@
             auditLedger.push(item);
 
             const div = document.createElement("div");
-            div.className = "p-2 rounded bg-gray-900/60 border border-gray-800 flex flex-col gap-1";
+            div.className = "p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-1";
             div.innerHTML = `
                 <div class="flex items-center justify-between text-[10px]">
-                    <span class="text-purple-400 font-bold">${item.id} • ${item.action}</span>
-                    <span class="text-gray-500">${item.time}</span>
+                    <span class="text-purple-700 font-bold">${item.id} • ${item.action}</span>
+                    <span class="text-slate-400">${item.time}</span>
                 </div>
-                <div class="text-gray-400 truncate">Hash: <span class="text-gray-300 font-mono text-[10px]">${item.hash.substring(0, 32)}...</span></div>
-                <div class="text-[10px] text-gray-400 flex items-center justify-between">
-                    <span>Permit: ${item.permit}</span>
-                    <span class="${risk === 'HIGH' ? 'text-amber-400' : 'text-emerald-400'}">Floor: ${risk}</span>
+                <div class="text-slate-500 truncate text-[10px]">Hash: <span class="text-slate-700 font-mono">${item.hash.substring(0, 32)}...</span></div>
+                <div class="text-[10px] text-slate-500 flex items-center justify-between">
+                    <span>Permit: <strong class="text-slate-700">${item.permit}</strong></span>
+                    <span class="${risk === 'HIGH' ? 'text-amber-700 font-bold' : 'text-emerald-700 font-bold'}">Floor: ${risk}</span>
                 </div>
             `;
             list.prepend(div);
@@ -565,7 +592,7 @@
 
         function clearHistory() {
             document.getElementById("chatHistory").innerHTML = `
-                <div class="p-3 rounded-lg bg-gray-900 border border-gray-800 text-gray-400 font-mono text-xs">
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 font-mono text-xs">
                     Terminal cleared. CIEAV Two-Phase Commit safety floor ready.
                 </div>
             `;
