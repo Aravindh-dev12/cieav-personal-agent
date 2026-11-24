@@ -1,0 +1,59 @@
+[
+  {
+    "id": "evt-2026-11-24-01",
+    "time": "09:30 AM",
+    "title": "Daily Standup & Sovereign Agent Roadmap",
+    "platform": "Google Meet",
+    "link": "https://meet.google.com/cieav-daily",
+    "attendees": [
+      "team@cieav.dev",
+      "aravindh1653@gmail.com"
+    ],
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "evt-2026-11-24-02",
+    "time": "02:00 PM",
+    "title": "CIEAV 1B Multimodal Deployment & Architecture Review",
+    "platform": "Local Workspace",
+    "link": "https://github.com/Aravindh-dev12/cieav-personal-agent",
+    "attendees": [
+      "Aravindhan B"
+    ],
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "evt-2026-11-24-03",
+    "time": "04:30 PM",
+    "title": "Open Source Community Q&A (Two-Phase Commit)",
+    "platform": "Hugging Face Space",
+    "link": "https://huggingface.co/spaces/Aravindhan11/Cieav-Agent",
+    "attendees": [
+      "Community",
+      "Aravindhan B"
+    ],
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "evt-2026-11-24-7043",
+    "time": "03:00 PM",
+    "title": "Meeting: Engineering Team",
+    "platform": "Google Meet",
+    "attendees": [
+      "aravindh1653@gmail.com"
+    ],
+    "status": "CONFIRMED",
+    "created_at": "2026-11-24T13:27:23.387200"
+  },
+  {
+    "id": "evt-2026-11-24-7043",
+    "time": "03:00 PM",
+    "title": "Meeting: Engineering Team",
+    "platform": "Google Meet",
+    "attendees": [
+      "aravindh1653@gmail.com"
+    ],
+    "status": "CONFIRMED",
+    "created_at": "2026-11-24T13:27:23.410611"
+  }
+]

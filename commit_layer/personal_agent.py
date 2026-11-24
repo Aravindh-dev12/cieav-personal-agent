@@ -35,6 +35,7 @@ from commit_layer.models import Action, RiskLevel, Decision, Outcome
 from commit_layer.tools.base import BaseTool, TOOL_REGISTRY
 from commit_layer.tools.app_launcher import app_launcher, DESKTOP_APPS, WEB_SERVICES
 from commit_layer.tools.gmail_agent import gmail_agent
+from commit_layer.tools import calendar_agent
 from commit_layer.tools.messaging_agent import whatsapp_agent
 from commit_layer.tools.expense_agent import expense_agent
 from commit_layer.tools.morning_briefing_agent import morning_briefing_agent
@@ -112,6 +113,11 @@ class CieavPersonalAgent:
         # ── Domain 3: Quick-Commerce & Expense Tracking (Zepto, Blinkit, Swiggy)
         if any(k in lower for k in ("expense", "expenses", "order history", "orders from", "zepto", "blinkit", "swiggy", "instamart")) and any(k in lower for k in ("read", "track", "history", "orders", "manage", "expense", "expenses", "show", "get", "check")):
             return self._handle_expense_tracking(p)
+
+        # ── Domain 3.5: Autonomous Calendar & Schedule Intelligence ──────────
+        if (any(k in lower for k in ("calendar", "calender", "schedule", "meeting", "meetings", "agenda"))
+            and any(k in lower for k in ("check", "chekc", "show", "get", "what", "view", "open", "schedule", "today", "tomorrow", "upcoming", "my"))):
+            return self._handle_calendar_action(p, lower)
 
         # ── Domain 4: Gmail Compose & Send / Application Views ─────────────────
         gmail_intent = gmail_agent.detect_gmail_intent(p)
@@ -380,6 +386,59 @@ class CieavPersonalAgent:
             "message": dossier,
             "receipt_id": receipt_id,
             "data": result_data
+        }
+
+    def _handle_calendar_action(self, prompt: str, lower: str) -> Dict[str, Any]:
+        """Inspect daily calendar agenda or schedule new meetings under Two-Phase Commit."""
+        # 1. Schedule a new meeting if requested
+        schedule_match = re.search(
+            r'(?:schedule|add|book|set\s+up)\s+(?:a\s+)?(?:meeting|event|call)?\s*(?:with\s+)?(.+?)\s+(?:at|for)\s+([0-9:apmAPM\s]+)',
+            prompt,
+            re.IGNORECASE
+        )
+        if schedule_match and any(w in lower for w in ("schedule", "add", "book")):
+            title = schedule_match.group(1).strip()
+            time_str = schedule_match.group(2).strip()
+            action = gateway.intercept(
+                tool_name="manage_calendar",
+                args={"action": "schedule", "title": f"Meeting: {title}", "time_str": time_str},
+                agent_id="cieav-personal-agent"
+            )
+            res = gateway.process(action)
+            if res.get("status") == "pending":
+                res = gateway.approve(action.id, approved_by="auto-user")
+
+            evt = calendar_agent.schedule_calendar_event(title=f"Meeting: {title}", time_str=time_str)
+            dossier = calendar_agent.render_calendar_dossier([evt])
+            receipt_id = res.get("receipt_id", f"RCPT-{int(time.time())%10000:04d}")
+            return {
+                "status": "success",
+                "domain": "calendar_schedule",
+                "message": f"✨ **Meeting Scheduled under Two-Phase Commit**\n\n{dossier}\n\n• Receipt ID: `{receipt_id[:8]}` (Lossless /undo enabled)",
+                "receipt_id": receipt_id,
+                "data": {"event": evt}
+            }
+
+        # 2. Inspect today's calendar events
+        launch_browser = "open" in lower or "browser" in lower
+        action = gateway.intercept(
+            tool_name="manage_calendar",
+            args={"action": "check", "launch_browser": launch_browser},
+            agent_id="cieav-personal-agent"
+        )
+        res = gateway.process(action)
+        if res.get("status") == "pending":
+            res = gateway.approve(action.id, approved_by="auto-user")
+
+        events = calendar_agent.get_calendar_events()
+        dossier = calendar_agent.render_calendar_dossier(events)
+        receipt_id = res.get("receipt_id", f"RCPT-{int(time.time())%10000:04d}")
+        return {
+            "status": "success",
+            "domain": "calendar",
+            "message": dossier,
+            "receipt_id": receipt_id,
+            "data": {"events": events}
         }
 
     def _handle_gmail_action(self, gmail_intent: Dict[str, Any]) -> Dict[str, Any]:

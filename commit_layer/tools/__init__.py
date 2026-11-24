@@ -20,6 +20,7 @@ except (ImportError, AttributeError):
     REABilateralExchangeTool = None
 from commit_layer.tools.app_launcher import AppLauncherTool, CloseApplicationTool, app_launcher, AppLauncherManager
 from commit_layer.tools.gmail_agent import GmailApplicationInspectorTool, GmailComposeTool, GmailApplicationInspector, GmailAgent, gmail_agent
+from commit_layer.tools.calendar_agent import CalendarTool, get_calendar_events, schedule_calendar_event, render_calendar_dossier
 from commit_layer.tools.expense_agent import ExpenseTrackingAgent, expense_agent, ExpenseTrackingTool
 from commit_layer.tools.morning_briefing_agent import (
     MorningBriefingAgent, morning_briefing_agent,

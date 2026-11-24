@@ -312,7 +312,7 @@ class GmailAgent:
             # Check it's not merely searching views
             if not any(k in lower for k in ("viewed", "views", "seen", "who viewed", "which company")):
                 is_compose_send = True
-        elif ("send mail" in lower or "send email" in lower or "compose mail" in lower or "compose email" in lower) and ("gmail" in lower or "@" in lower):
+        elif (re.search(r'\b(send|compose|draft)\s+(?:an?\s+)?(?:email|mail)\b', lower) or "send mail" in lower or "send email" in lower) and ("gmail" in lower or "@" in lower):
             is_compose_send = True
         elif "open gmail send mail" in lower or "open gmail to mail" in lower or "open gmail and send" in lower:
             is_compose_send = True
@@ -408,12 +408,14 @@ class GmailAgent:
         has_app = bool(re.search(r'\b(app|apps|application|applications|applicaiton|applicaitons|applied|job|jobs|career)\b', clean))
         has_company = bool(re.search(r'\b(company|companies|whihc\s*company|which\s*company|who\s*viewed)\b', clean))
 
+        has_check = bool(re.search(r'\b(check|chekc|inspect|read|scan|open|fetch|get|show|unread|inbox)\b', clean))
+
         is_match = False
         if has_app and has_viewed:
             is_match = True
         elif has_linkedin and (has_viewed or has_app or has_company):
             is_match = True
-        elif has_gmail and (has_linkedin or has_app or has_viewed):
+        elif has_gmail and (has_linkedin or has_app or has_viewed or has_check):
             is_match = True
         elif has_company and has_viewed:
             is_match = True
