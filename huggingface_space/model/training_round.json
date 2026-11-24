@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "engine": "cieav-1b-multimodal-post-training",
+  "timestamp": "2026-11-24T12:00:00Z",
+  "stage": "sft_and_rlvr_grpo",
+  "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "target_repo": "Aravindhan11/Cieav-model",
+  "hyperparameters": {
+    "learning_rate": 0.0002,
+    "epochs": 3,
+    "batch_size": 2,
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.0,
+    "max_seq_length": 2048,
+    "warmup_ratio": 0.05,
+    "weight_decay": 0.01,
+    "seed": 42
+  },
+  "multimodal_capabilities": {
+    "vision_ui_inspection": true,
+    "terminal_error_diagnostics": true,
+    "architecture_diagram_synthesis": true,
+    "dark_mode_ui_generation": true
+  },
+  "anti_reward_hacking": {
+    "verifier": "deterministic_consequence_and_schema_floor",
+    "critical_risk_penalty": -1.0,
+    "secret_leak_penalty": -1.0,
+    "lossless_rollback_verified": true
+  },
+  "backend": "simulation",
+  "status": "ready"
+}

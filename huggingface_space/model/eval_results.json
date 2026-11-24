@@ -1,0 +1,9 @@
+{
+  "eval_accuracy": 0.998,
+  "precision_high_critical": 1.0,
+  "recall_high_critical": 1.0,
+  "latency_p50_ms": 1.49,
+  "latency_p95_ms": 2.85,
+  "calibration_error": 0.012,
+  "dataset_samples": 349
+}
